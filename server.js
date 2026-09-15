@@ -73,38 +73,15 @@ if (config.trustProxy) {
 }
 
 // Biztonság és Rate Limiting
-app.use((req, res, next) => {
-    // Ha bármilyen fájl-kérés vagy néző érkezik, teljesen hagyjuk ki a helmet-et.
-    // A regulex-et használjuk, hogy biztosan elkapja az /ugyfel/fajl és /fajl kezdetűeket is.
-    if (req.url.includes('/fajl/') || req.url.includes('/view')) {
-        return next();
-    }
-    // Minden más oldalra mehet a helmet
-    helmet({
-        referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-        contentSecurityPolicy: {
-            directives: {
-                defaultSrc: ["'self'"],
-                scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com"],
-                styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com", "https://unpkg.com"],
-                fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "data:"],
-                imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://*.unsplash.com", "blob:"],
-                connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://fonts.gstatic.com"],
-                frameSrc: ["'self'", "blob:", "https://www.google.com", "https://maps.google.com", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
-                objectSrc: ["'self'"],
-                baseUri: ["'self'"],
-                formAction: ["'self'"],
-                upgradeInsecureRequests: null
-            }
-        },
-        crossOriginEmbedderPolicy: false,
-        crossOriginOpenerPolicy: false,
-        originAgentCluster: false
-    })(req, res, next);
-});
-
-// A korábbi app.use(helmet(...)) hívást töröljük, mert már benne van a fenti blokkban
-// (Ezt a részt a sed/editor automatikusan kezeli a kontextus alapján)
+// CSP teljesen kikapcsolva, mert a mobil böngészők PDF olvasóit blokkolja.
+// A többi alapvető helmet védelem megmarad.
+app.use(helmet({
+    contentSecurityPolicy: false,
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: false,
+    originAgentCluster: false
+}));
 
 
 // --- CSRF védelem (saját, csomag nélküli megvalósítás) ---

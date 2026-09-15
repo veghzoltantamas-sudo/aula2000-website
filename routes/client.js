@@ -124,11 +124,12 @@ function createClientRouter(deps){
                     res.removeHeader('X-Frame-Options');
                     res.removeHeader('X-Content-Type-Options');
                     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-                    // Kényszerítsük a böngészőt, hogy ne cache-elje a régi hibás fejléceket
-                    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-                    res.setHeader('Pragma', 'no-cache');
-                    res.setHeader('Expires', '0');
+                    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
                     res.setHeader('X-Accel-Buffering', 'no');
+                    // Mobilon (különösen iOS-en) a tiszta Content-Type a legbiztosabb
+                    res.setHeader('Content-Type', 'application/pdf');
+                    // Ha nem letöltést kértek, akkor megpróbáljuk elhagyni a disposition-t, hátha az zavar
+                    if (!dl) return res.sendFile(fp);
                 }
                 res.setHeader('Content-Disposition','inline');
             }
