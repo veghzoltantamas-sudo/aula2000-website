@@ -1,0 +1,80 @@
+<footer>
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0">&copy; <%= new Date().getFullYear() %> <%= content.site_title %> | <a href="/admin-login" class="text-white-50 text-decoration-none">Admin Panel</a></p>
+            </div>
+            <div class="col-md-6">
+                <form id="newsletter-form" class="d-flex gap-2" style="max-width:400px;margin:0 auto">
+                    <input type="email" id="newsletter-email" class="form-control" placeholder="<%= t('footer.newsletterPlaceholder') %>" required>
+                    <button type="submit" class="btn btn-wood px-3" style="white-space:nowrap"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+                <% if (settings.newsletter_gdpr_enabled === '1') { %>
+                <div class="form-check text-center mt-2 mx-auto" style="max-width:400px">
+                    <input class="form-check-input" type="checkbox" id="newsletter-gdpr-consent" style="background-color:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.25);" required>
+                    <label class="form-check-label small" for="newsletter-gdpr-consent" style="color:rgba(245,239,232,0.7);">
+                        <%- (settings.newsletter_gdpr_label || 'Elfogadom, hogy adataimat hírlevél küldés céljából feldolgozzák. Bármikor leiratkozhatok.') %>
+                    </label>
+                </div>
+                <% } %>
+                <div id="newsletter-msg" class="text-center small mt-2" style="color:var(--gold)"></div>
+                <div class="text-center small mt-1" style="color:rgba(245,239,232,0.45);font-size:0.72rem;">
+                    <%= t('footer.newsletterConsent') %> <a href="/api/newsletter/unsubscribe" style="color:var(--gold);text-decoration:underline;"><%= t('footer.newsletterUnsubscribeHere') %></a>.
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<% if (settings.cookie_consent_enabled === '1') { %>
+<div id="cookie-consent-banner" class="cookie-consent-banner" role="dialog" aria-live="polite" aria-label="Cookie hozzájárulás">
+    <div class="cookie-consent-inner">
+        <div class="cookie-consent-text">
+            <i class="fa-solid fa-cookie-bite me-2" style="color:var(--gold)"></i>
+            <span><%= settings.cookie_consent_text || 'Ez a weboldal sütiket használ a jobb felhasználói élmény érdekében.' %></span>
+            <a href="<%= settings.cookie_consent_link_url || '/page/adatkezeles' %>" class="cookie-consent-link"><%= settings.cookie_consent_link_text || 'Adatvédelmi szabályzat' %></a>
+        </div>
+        <div class="cookie-consent-buttons">
+            <button type="button" id="cookie-consent-decline" class="btn btn-outline-light btn-sm"><%= settings.cookie_consent_decline_text || 'Elutasítom' %></button>
+            <button type="button" id="cookie-consent-accept" class="btn btn-wood btn-sm"><%= settings.cookie_consent_button_text || 'Elfogadom' %></button>
+        </div>
+    </div>
+</div>
+<style>
+.cookie-consent-banner{position:fixed;left:0;right:0;bottom:0;z-index:99999;background:rgba(12,14,16,0.97);border-top:1px solid rgba(212,176,107,0.25);padding:14px 16px;box-shadow:0 -8px 30px rgba(0,0,0,0.5);display:none;backdrop-filter:blur(8px);}
+.cookie-consent-banner.show{display:block;}
+.cookie-consent-inner{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
+.cookie-consent-text{color:rgba(245,239,232,0.85);font-size:0.9rem;flex:1;min-width:260px;}
+.cookie-consent-link{color:var(--gold);text-decoration:underline;margin-left:6px;}
+.cookie-consent-buttons{display:flex;gap:10px;flex-shrink:0;}
+@media (max-width:576px){.cookie-consent-inner{flex-direction:column;align-items:flex-start;}.cookie-consent-buttons{width:100%;}.cookie-consent-buttons .btn{flex:1;}}
+</style>
+<script>
+(function(){
+    var KEY='aula2000_cookie_consent';
+    try { if (localStorage.getItem(KEY)) return; } catch(e){}
+    function show(){ var b=document.getElementById('cookie-consent-banner'); if(b) b.classList.add('show'); }
+    function set(v){ try{ localStorage.setItem(KEY, v); }catch(e){} var b=document.getElementById('cookie-consent-banner'); if(b) b.classList.remove('show'); }
+    function bind(){ var a=document.getElementById('cookie-consent-accept'); if(a) a.addEventListener('click', function(){ set('accepted'); }); var d=document.getElementById('cookie-consent-decline'); if(d) d.addEventListener('click', function(){ set('declined'); }); }
+    document.addEventListener('DOMContentLoaded', function(){ bind(); show(); });
+    if (document.readyState !== 'loading') { bind(); show(); }
+})();
+</script>
+<% } %>
+
+<script>
+    window.Aula2000Config = window.Aula2000Config || {};
+    window.Aula2000Config.promoDeadline = <%- typeof promoDeadline !== 'undefined' && promoDeadline ? promoDeadline : 'null' %> || (Date.now() + 72 * 60 * 60 * 1000);
+    window.Aula2000Config.vapidPublicKey = '<%= (settings && settings.vapid_public_key) || "" %>';
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script defer src="/js/main.js"></script>
+<script defer src="/js/index.js"></script>
+<% if (schemaEntries && schemaEntries.length) { %>
+    <% schemaEntries.forEach((entry) => { %>
+        <% if (entry && entry.data_json) { %>
+            <script type="application/ld+json"><%- entry.data_json %></script>
+        <% } %>
+    <% }); %>
+<% } %>

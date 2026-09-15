@@ -1,0 +1,110 @@
+.service-description br { content: ""; display: block; margin-bottom: 1rem; }
+.workflow-detail-gallery-image { display: block; width: 100%; aspect-ratio: 1.5; object-fit: cover; border-radius: 12px; box-shadow: 0 12px 28px rgba(0,0,0,0.12); }
+/* Service Detail Page Styles */
+.service-hero {
+    min-height: 60vh;
+    padding-bottom: 3rem;
+}
+
+.service-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(18,18,18,0.9), rgba(18,18,18,0.3));
+    z-index: 0;
+}
+
+.text-gold {
+    color: var(--gold) !important;
+}
+
+.content-formatted {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.content-formatted h2 {
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+    color: var(--dark);
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.content-formatted h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: var(--gold);
+    border-radius: 2px;
+}
+
+.content-formatted h3 {
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+.content-formatted p {
+    margin-bottom: 1.5rem;
+}
+
+.content-formatted ul {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.content-formatted li {
+    margin-bottom: 0.5rem;
+}
+
+.content-formatted img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+}
+
+.icon-circle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: rgba(212, 176, 107, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+/* Service Card on Index Page */
+.service-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    border-bottom: 4px solid transparent;
+}
+
+.service-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    border-bottom: 4px solid var(--gold);
+}
+
+.service-box .transition-transform {
+    transition: transform 0.5s ease;
+}
+
+.service-box:hover .transition-transform {
+    transform: scale(1.05);
+}
+
+.text-wood {
+    color: var(--gold);
+}

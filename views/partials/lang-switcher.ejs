@@ -1,0 +1,57 @@
+<%# Language Switcher partial %>
+<% const _langs = (typeof supportedLangs !== 'undefined' && supportedLangs) ? supportedLangs : ['hu','en','de']; %>
+<% const _curLang = (typeof currentLang !== 'undefined') ? currentLang : (typeof lang !== 'undefined' ? lang : 'hu'); %>
+<% const _langNames = { hu: 'Magyar', en: 'English', de: 'Deutsch' }; %>
+<% const _langFlags = { hu: '🇭🇺', en: '🇬🇧', de: '🇩🇪' }; %>
+<% const _compact = (typeof compact !== 'undefined') ? compact : false; %>
+<% const _baseUrl = (typeof originalUrl !== 'undefined') ? originalUrl : '/'; %>
+<% const _cleanUrl = _baseUrl.replace(/[?&]lang=[^&]*/, '').replace(/\?$/, ''); %>
+
+<div class="lang-switcher" id="langSwitcher">
+    <button class="lang-toggle" id="langToggleBtn" title="Nyelv / Language">
+        <span class="lang-flag"><%= _langFlags[_curLang] || '🌐' %></span>
+        <% if(!_compact) { %><span class="lang-code"><%= _curLang.toUpperCase() %></span><% } %>
+        <i class="fa-solid fa-chevron-down" style="font-size:0.6rem;opacity:0.5;"></i>
+    </button>
+    <div class="lang-dropdown" id="langDropdown">
+        <% _langs.forEach(l => { %>
+        <a href="<%= _cleanUrl %>?lang=<%= l %>" class="lang-option <%= l === _curLang ? 'active' : '' %>">
+            <span class="lang-flag"><%= _langFlags[l] || '🌐' %></span>
+            <span><%= _langNames[l] || l %></span>
+            <% if(l === _curLang) { %><i class="fa-solid fa-check"></i><% } %>
+        </a>
+        <% }) %>
+    </div>
+</div>
+<style>
+.lang-switcher{position:relative}
+.lang-toggle{background:rgba(201,169,110,0.08);border:1px solid rgba(201,169,110,0.15);color:var(--text-dim);padding:0.35rem 0.6rem;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;transition:all 0.2s;font-family:inherit}
+.lang-toggle:hover{border-color:rgba(201,169,110,0.4);color:var(--gold)}
+.lang-flag{font-size:1rem;line-height:1}
+.lang-dropdown{position:absolute;top:calc(100% + 4px);right:0;background:rgba(20,20,20,0.98);backdrop-filter:blur(20px);border:1px solid rgba(201,169,110,0.15);border-radius:8px;min-width:160px;padding:0.3rem;display:none;z-index:200;box-shadow:0 8px 30px rgba(0,0,0,0.5)}
+.lang-dropdown.open{display:block;animation:langFadeIn 0.15s ease}
+.lang-option{display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.8rem;border-radius:5px;color:var(--text-dim);font-size:0.82rem;text-decoration:none;transition:all 0.15s}
+.lang-option:hover{background:rgba(201,169,110,0.1);color:var(--gold)}
+.lang-option.active{color:var(--gold);font-weight:500}
+.lang-option .fa-check{margin-left:auto;font-size:0.7rem;color:var(--gold)}
+@keyframes langFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+</style>
+<script>
+(function(){
+    const dd = document.getElementById('langDropdown');
+    if(!dd) return;
+    var toggleBtn = document.getElementById('langToggleBtn');
+    if(toggleBtn) {
+        toggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dd.classList.toggle('open');
+        });
+    }
+    document.addEventListener('click', function(e){
+        if(!e.target.closest('.lang-switcher')) dd.classList.remove('open');
+    });
+    document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape') dd.classList.remove('open');
+    });
+})();
+</script>

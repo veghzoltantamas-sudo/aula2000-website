@@ -1,0 +1,17 @@
+/* AsztalosPro — Sticky CTA header (mobil) + scroll-to-top gomb */
+
+.sticky-cta-header{position:fixed;bottom:0;left:0;right:0;background:rgba(11,14,18,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(213,171,93,0.3);z-index:1030;padding:12px 0;transform:translateY(100%);transition:transform .3s ease}
+.sticky-cta-header.show{transform:translateY(0)}
+.sticky-cta-content{display:flex;gap:12px;align-items:center;justify-content:center}
+.sticky-cta-phone{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:rgba(255,255,255,.05);border:1px solid rgba(213,171,93,.4);border-radius:50px;color:var(--gold-soft);font-weight:600;text-decoration:none;transition:all .3s ease}
+.sticky-cta-phone:hover{background:rgba(213,171,93,.15);color:var(--gold-soft)}
+.sticky-cta-phone i{color:var(--gold-strong)}
+.sticky-cta-btn{display:inline-flex;align-items:center;padding:12px 24px;background:linear-gradient(180deg,#d9b56d 0%,#c79b52 35%,#b8853a 100%);border-radius:50px;color:#111;font-weight:700;font-size:.9rem;text-decoration:none;transition:all .3s ease;box-shadow:0 4px 15px rgba(183,130,62,.3)}
+.sticky-cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(183,130,62,.4);color:#111}
+@media(min-width:992px){.sticky-cta-header{display:none}}
+@media(max-width:480px){.sticky-cta-content{flex-direction:column;gap:8px}.sticky-cta-phone,.sticky-cta-btn{width:100%;justify-content:center;text-align:center}body{padding-bottom:140px}}
+@media(min-width:481px) and (max-width:991px){body{padding-bottom:70px}}
+.scroll-top-btn{position:fixed;bottom:24px;right:24px;width:50px;height:50px;background:linear-gradient(180deg,rgba(213,171,93,.9),rgba(166,118,53,.95));color:#111;border:none;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:1020;opacity:0;visibility:hidden;transform:translateY(20px);transition:all .3s ease;box-shadow:0 4px 15px rgba(0,0,0,.3)}
+.scroll-top-btn.show{opacity:1;visibility:visible;transform:translateY(0)}
+.scroll-top-btn:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+@media(max-width:991px){.scroll-top-btn{bottom:100px;width:44px;height:44px;font-size:1rem}}

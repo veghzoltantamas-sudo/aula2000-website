@@ -1,0 +1,30 @@
+/* AsztalosPro — project oldal stílusai */
+        :root { --primary: #8b5a2b; --dark: #3e2723; --light: #fdfbf7; --accent: #cd853f; }
+        body { font-family: 'Open Sans', sans-serif; background-color: var(--light); color: #333; padding-top: 80px; }
+        h1, h2, h3, h4, .navbar-brand { font-family: 'Lora', serif; }
+        
+        .navbar { background-color: white; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .navbar-brand { font-weight: 700; color: var(--dark) !important; font-size: 1.5rem; }
+        .btn-wood { background: var(--primary); color: white; border: none; padding: 12px 30px; font-weight: 600; text-transform: uppercase; border-radius: 5px; text-decoration: none; display: inline-block; transition: 0.3s; }
+        .btn-wood:hover { background: var(--dark); color: white; transform: translateY(-2px); }
+        
+        .project-category { color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+        .project-title { font-size: 3rem; font-weight: 700; color: var(--dark); margin: 15px 0 30px; }
+        
+        .main-img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 10px; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: block; }
+        .thumb-img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 5px; cursor: pointer; transition: 0.3s; border: 2px solid transparent; display: block; }
+        .thumb-img:hover { border-color: var(--accent); transform: scale(1.05); }
+        
+        .info-box { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-top: 5px solid var(--primary); }
+        .case-meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:0 0 28px; }
+        .case-meta div { background:#faf7f2; border-radius:7px; padding:12px 14px; }
+        .case-meta small { display:block; color:#8b5a2b; text-transform:uppercase; letter-spacing:1px; font-size:.68rem; font-weight:700; }
+        .case-meta span { display:block; margin-top:3px; }
+        .case-section { margin-top:34px; } .case-section h2 { color:var(--dark); font-size:1.45rem; margin-bottom:10px; }
+        .case-quote { border-left:3px solid var(--accent); padding:12px 0 12px 18px; font-style:italic; color:#6b6259; }
+        
+        @media (max-width: 768px) {
+            .project-title { font-size: 2rem; }
+            .main-img { height: 300px; }
+            .info-box { padding: 25px; margin-top: 30px; }
+        }

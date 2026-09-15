@@ -1,0 +1,30 @@
+.theme-toggle-btn {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.theme-toggle-btn:hover {
+    background: var(--gold);
+    color: var(--bg);
+}
+.light-mode {
+    --bg: #f5efe8;
+    --bg-soft: #ede6dd;
+    --panel: #fffaf5;
+    --panel-2: #efe7de;
+    --text: #171b1f;
+    --muted: #4e535a;
+    --line: rgba(17,18,20,0.12);
+}
+.light-mode body {
+    background: #f5efe8;
+    color: #171b1f;
+}

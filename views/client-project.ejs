@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projektem - Aula 2000</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <style>
+        :root{--gold:#c9a96e;--dark:#0f0f0f;--darker:#080808;--card:#161616;--text:#e8e0d4;--text-dim:rgba(232,224,212,0.55);--text-muted:rgba(232,224,212,0.35);--border:rgba(201,169,110,0.12);--border-hover:rgba(201,169,110,0.3)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--darker);color:var(--text);font-family:"Inter",sans-serif;min-height:100vh}
+        a{text-decoration:none}
+        .c-nav{background:rgba(15,15,15,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0.8rem 0;position:sticky;top:0;z-index:100}
+        .c-nav .brand{color:var(--text);font-family:"Playfair Display",serif;font-weight:700;font-size:1.15rem}
+        .c-nav .brand span{color:var(--gold)}
+        .c-nav .user-info{color:var(--text-dim);font-size:0.8rem}
+        .c-nav .user-info strong{color:var(--gold)}
+        .c-nav .btn-ghost{color:var(--text-muted);font-size:0.8rem;padding:0.3rem 0.7rem;border:1px solid var(--border);border-radius:6px;transition:all 0.2s}
+        .c-nav .btn-ghost:hover{color:var(--gold);border-color:var(--border-hover)}
+        .c-tabs{display:flex;gap:0.3rem;padding:1.2rem 0 0}
+        .c-tab{color:var(--text-muted);font-size:0.85rem;font-weight:500;padding:0.6rem 1.2rem;border-radius:8px 8px 0 0;border:1px solid transparent;border-bottom:none;transition:all 0.25s;cursor:pointer}
+        .c-tab:hover{color:var(--text-dim);background:rgba(201,169,110,0.05)}
+        .c-tab.active{color:var(--gold);background:var(--card);border-color:var(--border)}
+        .hero{padding:2.5rem 0 1.5rem;text-align:center}
+        .hero h1{font-family:"Playfair Display",serif;font-size:2rem;font-weight:700;opacity:0;transform:translateY(20px);animation:fadeUp 0.6s ease forwards}
+        .hero h1 span{color:var(--gold)}
+        .hero p{color:var(--text-dim);font-size:0.9rem;margin-top:0.3rem;opacity:0;animation:fadeIn 0.6s 0.2s ease forwards}
+        .stats-bar{display:flex;gap:1rem;margin:1rem 0 0;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeIn 0.6s 0.3s ease forwards}
+        .stat-chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:0.4rem 1rem;font-size:0.75rem;color:var(--text-muted)}
+        .stat-chip strong{color:var(--gold);font-weight:600}
+        /* PROJEKT FÁZISOK */
+        .phases-section{margin:1.5rem 0 2rem;opacity:0;animation:fadeUp 0.6s 0.4s ease forwards}
+        .phases-track{display:flex;gap:0;position:relative;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.5rem;overflow:hidden}
+        .phases-track::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.3}
+        .phase-step{flex:1;text-align:center;position:relative;padding:0 0.3rem}
+        .phase-dot{width:14px;height:14px;border-radius:50%;background:var(--darker);border:2px solid var(--border);margin:0 auto 0.5rem;transition:all 0.4s;position:relative;z-index:1}
+        .phase-step.completed .phase-dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 12px rgba(201,169,110,0.4)}
+        .phase-step.current .phase-dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 16px rgba(201,169,110,0.5);animation:pulse 2s ease-in-out infinite}
+        .phase-step.completed::after{content:"";position:absolute;top:7px;left:calc(50% + 7px);width:calc(100% - 14px);height:2px;background:var(--gold)}
+        .phase-step:last-child::after{display:none}
+        .phase-label{font-size:0.65rem;color:var(--text-muted);font-weight:500;transition:color 0.3s;line-height:1.3}
+        .phase-step.completed .phase-label,.phase-step.current .phase-label{color:var(--gold)}
+        .phase-step.current .phase-label{font-weight:600}
+        .phase-icon{font-size:0.6rem;color:var(--text-muted);margin-bottom:0.2rem;display:block}
+        .phase-step.completed .phase-icon,.phase-step.current .phase-icon{color:var(--gold)}
+        @media(max-width:576px){.phases-track{padding:1rem 0.5rem}.phase-label{font-size:0.55rem}.phase-dot{width:10px;height:10px}.phase-step.completed::after{top:5px;left:calc(50% + 5px);width:calc(100% - 10px)}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+        .timeline{position:relative;padding-left:2rem}
+        .timeline::before{content:"";position:absolute;left:8px;top:0;bottom:0;width:2px;background:rgba(201,169,110,0.2)}
+        .timeline-item{position:relative;margin-bottom:2rem;padding-left:1.5rem;opacity:0;transform:translateX(-20px)}
+        .timeline-item.visible{opacity:1;transform:translateX(0);transition:all 0.5s cubic-bezier(0.4,0,0.2,1)}
+        .timeline-item::before{content:"";position:absolute;left:-1.55rem;top:0.4rem;width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--darker);z-index:1}
+        .timeline-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;transition:border-color 0.3s}
+        .timeline-card:hover{border-color:var(--border-hover)}
+        .timeline-card h3{font-family:"Playfair Display",serif;font-size:1.15rem;color:var(--text);margin-bottom:0.5rem}
+        .timeline-card .date{color:var(--text-muted);font-size:0.8rem;margin-bottom:1rem}
+        .timeline-card .body{color:rgba(232,224,212,0.8);line-height:1.7;font-size:0.95rem}
+        .timeline-card .body h3{font-size:1.05rem;color:var(--gold);margin:1rem 0 0.5rem}
+        .timeline-card .body p{margin-bottom:0.5rem}
+        .timeline-card .body code{background:rgba(201,169,110,0.12);padding:2px 6px;border-radius:4px;font-size:0.85rem}
+        .timeline-card .body a{color:var(--gold)}
+        .file-list{margin-top:1rem;padding-top:0.8rem;border-top:1px solid rgba(201,169,110,0.08)}
+        .file-item{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,169,110,0.06);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.8rem;margin:0.3rem;font-size:0.8rem;color:var(--text-dim);transition:all 0.2s}
+        .file-item:hover{background:rgba(201,169,110,0.15);color:var(--gold);border-color:var(--border-hover)}
+        .file-item i{color:var(--gold)}
+        .file-item .dl-link{margin-left:0.4rem;color:var(--text-muted);font-size:0.7rem}
+        .file-item .dl-link:hover{color:var(--gold)}
+        .empty-state{text-align:center;padding:4rem 2rem}
+        .empty-state i{font-size:3rem;color:rgba(201,169,110,0.2);margin-bottom:1rem;display:block}
+        .empty-state h4{color:var(--text-dim);font-weight:500;font-size:1.1rem}
+        .empty-state p{color:var(--text-muted);font-size:0.85rem;margin-top:0.4rem}
+    </style>
+</head>
+<body>
+<nav class="c-nav">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a href="/ugyfel/projekt" class="brand">AULA <span>2000</span></a>
+        <div class="d-flex align-items-center gap-3">
+            <span class="user-info"><i class="fa-solid fa-user me-1"></i> <strong><%= user.display_name || user.username %></strong> &mdash; <%= user.project_name || "" %></span>
+            <a href="/ugyfel/logout" class="btn-ghost"><i class="fa-solid fa-right-from-bracket me-1"></i> Kilepes</a>
+        </div>
+    </div>
+</nav>
+<div class="container" style="max-width:900px;">
+    <div class="c-tabs">
+        <a href="/ugyfel/projekt" class="c-tab active"><i class="fa-solid fa-timeline me-1"></i> Frissitesek</a>
+        <a href="/ugyfel/galeria" class="c-tab"><i class="fa-solid fa-images me-1"></i> Galeria</a>
+    </div>
+    <div class="hero">
+        <h1><span><%= user.project_name || "Projektem" %></span></h1>
+        <p><%= user.project_name ? "Projekt allasanak kovetese" : "" %></p>
+        <div class="stats-bar">
+            <div class="stat-chip"><i class="fa-solid fa-clock me-1" style="color:var(--gold);"></i> <strong><%= updates ? updates.length : 0 %></strong> frissites</div>
+            <% const allFileCount = updates ? updates.reduce((s,u)=>s+(u.files?u.files.length:0),0) : 0; %>
+            <div class="stat-chip"><i class="fa-solid fa-paperclip me-1" style="color:var(--gold);"></i> <strong><%= allFileCount %></strong> fajl</div>
+        </div>
+    </div>
+    <% if(typeof project_phase !== 'undefined' && project_phase) { %>
+    <div class="phases-section">
+        <div class="phases-track">
+            <div class="phase-step <%= project_phase >= 1 ? (project_phase > 1 ? 'completed' : 'current') : '' %>">
+                <span class="phase-icon"><i class="fa-solid fa-ruler-combined"></i></span>
+                <div class="phase-dot"></div>
+                <div class="phase-label">Felmérés</div>
+            </div>
+            <div class="phase-step <%= project_phase >= 2 ? (project_phase > 2 ? 'completed' : 'current') : '' %>">
+                <span class="phase-icon"><i class="fa-solid fa-compass-drafting"></i></span>
+                <div class="phase-dot"></div>
+                <div class="phase-label">Tervezés</div>
+            </div>
+            <div class="phase-step <%= project_phase >= 3 ? (project_phase > 3 ? 'completed' : 'current') : '' %>">
+                <span class="phase-icon"><i class="fa-solid fa-hammer"></i></span>
+                <div class="phase-dot"></div>
+                <div class="phase-label">Kivitelezés</div>
+            </div>
+            <div class="phase-step <%= project_phase >= 4 ? 'completed' : '' %>">
+                <span class="phase-icon"><i class="fa-solid fa-check-double"></i></span>
+                <div class="phase-dot"></div>
+                <div class="phase-label">Átadás</div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+    <% if(updates && updates.length > 0) { %>
+    <div class="timeline">
+        <% updates.forEach(u => { %>
+        <div class="timeline-item">
+            <div class="timeline-card">
+                <h3><i class="fa-solid fa-circle-info me-1" style="font-size:0.8rem;color:var(--gold);"></i> <%= u.title || "Projekt frissites" %></h3>
+                <div class="date"><i class="fa-regular fa-clock me-1"></i> <%= u.created_at ? new Date(u.created_at).toLocaleDateString("hu-HU", { year:"numeric", month:"long", day:"numeric", hour:"2-digit", minute:"2-digit" }) : "" %></div>
+                <% if(u.body_html) { %>
+                <div class="body"><%- u.body_html %></div>
+                <% } else if(u.body_raw) { %>
+                <div class="body"><p><%= u.body_raw %></p></div>
+                <% } %>
+                <% if(u.files && u.files.length > 0) { %>
+                <div class="file-list">
+                    <small style="color:var(--text-muted);" class="d-block mb-1"><i class="fa-solid fa-paperclip me-1"></i> Csatolt fajlok (<%= u.files.length %>):</small>
+                    <% u.files.forEach(f => { %>
+                    <div class="file-item">
+                        <a href="/ugyfel/fajl/<%= f.id %>/view" style="display:inline-flex;align-items:center;gap:0.5rem;color:inherit;text-decoration:none;">
+                            <i class="fa-solid fa-<%= f.mime_type && f.mime_type.startsWith('image/') ? 'image' : f.mime_type === 'application/pdf' ? 'file-pdf' : 'file' %>"></i>
+                            <%= f.original_name %>
+                            <% if(f.size) { %><span style="color:var(--text-muted);font-size:0.7rem;">(<%= (f.size / 1024).toFixed(0) %> KB)</span><% } %>
+                        </a>
+                        <a href="/ugyfel/fajl/<%= f.id %>?dl=1" class="dl-link" title="Letoltes"><i class="fa-solid fa-download"></i></a>
+                    </div>
+                    <% }) %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+    <% } else { %>
+    <div class="empty-state">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <h4>Meg nincsenek projekt frissitesek</h4>
+        <p>Amint a csapatunk frissites ad a projektrol, itt fogja megtalalni.</p>
+    </div>
+    <% } %>
+</div>
+<div class="container mt-4 mb-4 text-center" style="max-width:900px;">
+    <small style="color:var(--text-muted);font-size:0.75rem;">&copy; Aula 2000 Építész Iroda</small>
+</div>
+<script>
+const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            obs.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.timeline-item').forEach((el, i) => {
+    el.style.transitionDelay = (i * 120) + 'ms';
+    obs.observe(el);
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

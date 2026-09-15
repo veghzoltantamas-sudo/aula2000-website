@@ -1,0 +1,20 @@
+/* AsztalosPro — blog oldal stílusai */
+        .blog-hero { padding: 120px 0 60px; text-align: center; background: linear-gradient(180deg, rgba(213,171,93,0.06), transparent 60%); }
+        .blog-hero h1 { font-family: 'Lora', serif; font-size: 2.8rem; font-weight: 700; color: var(--text); }
+        .blog-hero p { color: var(--muted); font-size: 1.1rem; margin-top: 0.5rem; }
+        .blog-filters { padding: 0 0 2rem; display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+        .blog-filters a { padding: 0.45rem 1.1rem; border-radius: 999px; border: 1px solid rgba(213,171,93,0.25); color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: all 0.25s; }
+        .blog-filters a.active, .blog-filters a:hover { background: var(--gold); color: #111; border-color: var(--gold); font-weight: 600; }
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2rem; padding-bottom: 4rem; }
+        .blog-card { border: 1px solid rgba(213,171,93,0.12); border-radius: 18px; overflow: hidden; background: var(--panel); transition: transform 0.3s, box-shadow 0.3s; }
+        .blog-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.25); }
+        .blog-card img { width: 100%; height: 220px; object-fit: cover; }
+        .blog-card-body { padding: 1.4rem 1.5rem 1.6rem; }
+        .blog-card-cat { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold); font-weight: 600; margin-bottom: 0.5rem; }
+        .blog-card h3 { font-family: 'Lora', serif; font-size: 1.25rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+        .blog-card h3 a { color: inherit; text-decoration: none; }
+        .blog-card h3 a:hover { color: var(--gold); }
+        .blog-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+        .blog-card-meta { display: flex; align-items: center; gap: 0.8rem; margin-top: 1rem; font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+        .blog-empty { text-align: center; padding: 5rem 1rem; color: var(--muted); }
+        .blog-empty i { font-size: 3rem; color: var(--gold); opacity: 0.3; margin-bottom: 1rem; display: block; }

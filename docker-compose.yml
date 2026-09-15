@@ -1,0 +1,26 @@
+services:
+  aula2000:
+    container_name: aula2000
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "32807:8080"
+    environment:
+      - PORT=8080
+    volumes:
+      - ./data:/app/data
+      - ./public/uploads:/app/public/uploads
+    networks:
+      - coolify
+
+# Megjegyzés: A Traefik label-ek eltávolítva.
+# A cloudflared Tunnel közvetlenül a konténer publikus portjára (32807) irányítja
+# a forgalmat, megkerülve a Traefik-et. Az SSL-t a Cloudflare biztosítja az élponton,
+# ezért Let's Encrypt/certresolver itt nem szükséges (és a meglévő label-ek az
+# ACME ellenőrzés hibáját okozták: 403-as válasz).
+
+networks:
+  coolify:
+    external: true

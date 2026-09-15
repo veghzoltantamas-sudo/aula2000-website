@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Függőségek telepítése
+        run: npm ci
+
+      - name: Szintaxis ellenőrzés
+        run: node --check server.js && node --check config.js
+
+      - name: Lint (ESLint)
+        run: npx eslint server.js config.js tests/
+
+      - name: Egységtesztek
+        env:
+          NODE_ENV: test
+          SESSION_SECRET: ci-test-secret
+          ADMIN_PASSWORD: ci-test-password
+        run: npm test

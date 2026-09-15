@@ -1,0 +1,159 @@
+{
+    "nav": {
+        "home": "Főoldal",
+        "services": "Szolgáltatások",
+        "projects": "Referenciáink",
+        "workflow": "Munkafolyamat",
+        "blog": "Blog",
+        "about": "Irodánk",
+        "contact": "Kapcsolat",
+        "quote": "Ajánlatkérés",
+        "clientPortal": "Ügyfél belépés",
+        "app": "App"
+    },
+    "hero": {
+        "badge": "Egyedi faipari megoldások",
+        "title": "Egyedi bútorok, amelyek formálják az otthonát",
+        "subtitle": "Konyhabútort, beépített rendszereket és egyedi fafinomságokat tervezünk, amelyek a mindennapokat elegánsan és kényelmesen formálják.",
+        "cta": "Referenciáink",
+        "ctaSecondary": "Ingyenes felmérés",
+        "ctaQuote": "Ajánlatkérés",
+        "trust1": "Garancia",
+        "trust2": "3D tervezés",
+        "trust3": "Helyszíni felmérés",
+        "active": "Aktív",
+        "studio": "Luxury studio",
+        "statProjects": "Projekt",
+        "statYears": "Év",
+        "statDesign": "Tervezés",
+        "statResponse": "Válasz",
+        "summerPromo": "Nyári kedvezmény",
+        "deadline": "Lejárat:"
+    },
+    "about": {
+        "title": "Rólunk",
+        "guarantee": "Garancia",
+        "design3d": "3D tervezés",
+        "architectDesign": "Építész tervezés"
+    },
+    "features": {
+        "freeSurvey": "Ingyenes Felmérés",
+        "freeSurveyDesc": "Helyszíni felmérés és szaktanácsadás.",
+        "3dDesign": "3D Látványterv",
+        "3dDesignDesc": "Még a gyártás előtt láthatja a végeredményt.",
+        "qualityWork": "Precíz Kivitelezés",
+        "qualityWorkDesc": "Határidőre, maximális odafigyeléssel és garanciával."
+    },
+    "projects": {
+        "title": "Kiemelt Referenciáink",
+        "subtitle": "Legutóbbi munkáink, amelyekre a legbüszkébbek vagyunk.",
+        "empty": "Még nincsenek feltöltve referenciák."
+    },
+    "services": {
+        "title": "Szolgáltatásaink",
+        "subtitle": "Teljes körű faipari megoldások a tervezéstől az átadásig.",
+        "details": "Részletek"
+    },
+    "workflow": {
+        "title": "Munkafolyamat",
+        "subtitle": "A tervezéstől a beépítésig — átlátható és professzionális folyamat."
+    },
+    "testimonial": {
+        "title": "Ügyfelek véleménye"
+    },
+    "partner": {
+        "title": "Partnereink"
+    },
+    "contact": {
+        "title": "Írjon Nekünk!",
+        "subtitle": "Tervezze meg velünk álmai épületét. Kérjen ingyenes konzultációt vagy árajánlatot!",
+        "name": "Ön Neve",
+        "email": "E-mail Cím",
+        "phone": "Telefonszám",
+        "message": "Írja le az elképzelését...",
+        "send": "Küldés",
+        "success": "Sikeres üzenetküldés! Hamarosan keresni fogjuk.",
+        "phoneLabel": "Telefon",
+        "emailLabel": "E-mail",
+        "addressLabel": "Iroda",
+        "mapTitle": "Aula 2000 elhelyezkedés"
+    },
+    "quote": {
+        "title": "Ajánlatkérés",
+        "subtitle": "Gyors kapcsolat vagy részletes konfigurátor – válassza az Önnek kényelmes utat.",
+        "openConfigurator": "Prémium konfigurátor megnyitása"
+    },
+    "footer": {
+        "rights": "Minden jog fenntartva.",
+        "madeWith": "Készítettük",
+        "newsletterPlaceholder": "Iratkozzon fel hírlevelünkre...",
+        "newsletterConsent": "Feliratkozással elfogadja, hogy hírlevelet küldünk Önnek. Bármikor leiratkozhat",
+        "newsletterUnsubscribeHere": "itt"
+    },
+    "blog": {
+        "title": "Blog",
+        "readMore": "Tovább olvasom",
+        "backToList": "Vissza a bejegyzésekhez"
+    },
+    "faq": {
+        "title": "Gyakori kérdések"
+    },
+    "filter": {
+        "all": "Mind"
+    },
+    "beforeAfter": {
+        "title": "Átalakításaink előtte-utána",
+        "before": "Előtte",
+        "after": "Utána"
+    },
+    "socialProof": {
+        "text1": "14 ügyfél választott minket a héten",
+        "text2": "Kérjen ingyenes felmérést most"
+    },
+    "messages": {
+        "new": "új üzenet"
+    },
+    "pwa": {
+        "title": "Aula 2000 Alkalmazás",
+        "installTitle": "Telepítsd a kezdőképernyőre!",
+        "installDesc": "Gyorsabb betöltés, offline hozzáférés és közvetlen elérés telefonról vagy számítógépről.",
+        "android": "Android (Chrome / Samsung)",
+        "androidDesc": "Kattints a böngésző jobb felső",
+        "androidMenu": "pont",
+        "androidMenuEnd": "menüjére, majd válaszd az",
+        "androidOption1": "Alkalmazás telepítése",
+        "androidOption2": "Kezdőképernyőre",
+        "androidOptionEnd": "opciót.",
+        "ios": "iPhone / iPad (Safari)",
+        "iosDesc": "Kattints alul a",
+        "iosShare": "Megosztás",
+        "iosDescMid": "ikonra",
+        "iosDescEnd": ", majd görgess le és válaszd a",
+        "iosOption": "Főképernyőhöz adás",
+        "iosOptionEnd": "lehetőséget.",
+        "desktop": "Számítógép (Chrome / Edge)",
+        "desktopDesc": "Kattints a böngésző címsorának jobb szélén lévő",
+        "desktopInstall": "Telepítés",
+        "desktopDescEnd": "ikonra.",
+        "installBtn": "Azonnali Telepítés",
+        "okBtn": "Rendben, értem"
+    },
+    "search": {
+        "label": "Keresés",
+        "placeholder": "Keresés projektek, oldalak és blogok között...",
+        "close": "Bezárás"
+    },
+    "ui": {
+        "menu": "Menü",
+        "themeToggle": "Sötét/Világos mód",
+        "quickContact": "Gyors kapcsolatfelvétel",
+        "phoneCall": "Telefonálás",
+        "scrollToTop": "Ugrás a tetejére",
+        "close": "Bezárás"
+    },
+    "lang": {
+        "hu": "Magyar",
+        "en": "English",
+        "de": "Deutsch"
+    }
+}

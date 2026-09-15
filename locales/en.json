@@ -1,0 +1,159 @@
+{
+    "nav": {
+        "home": "Home",
+        "services": "Services",
+        "projects": "Projects",
+        "workflow": "Workflow",
+        "blog": "Blog",
+        "about": "About Us",
+        "contact": "Contact",
+        "quote": "Get a Quote",
+        "clientPortal": "Client Login",
+        "app": "App"
+    },
+    "hero": {
+        "badge": "Custom woodwork solutions",
+        "title": "Custom furniture that shapes your home",
+        "subtitle": "We design kitchen cabinets, built-in systems and custom woodwork that elegantly and comfortably shape everyday life.",
+        "cta": "Our Projects",
+        "ctaSecondary": "Free Survey",
+        "ctaQuote": "Get a Quote",
+        "trust1": "Warranty",
+        "trust2": "3D Design",
+        "trust3": "On-site Survey",
+        "active": "Active",
+        "studio": "Luxury studio",
+        "statProjects": "Projects",
+        "statYears": "Years",
+        "statDesign": "Design",
+        "statResponse": "Response",
+        "summerPromo": "Summer discount",
+        "deadline": "Deadline:"
+    },
+    "about": {
+        "title": "About Us",
+        "guarantee": "Warranty",
+        "design3d": "3D Design",
+        "architectDesign": "Architect Design"
+    },
+    "features": {
+        "freeSurvey": "Free Survey",
+        "freeSurveyDesc": "On-site measurement and expert consultation.",
+        "3dDesign": "3D Visualization",
+        "3dDesignDesc": "See the final result before production begins.",
+        "qualityWork": "Precision Craftsmanship",
+        "qualityWorkDesc": "On time, with maximum attention to detail and warranty."
+    },
+    "projects": {
+        "title": "Featured Projects",
+        "subtitle": "Our recent work we are most proud of.",
+        "empty": "No projects uploaded yet."
+    },
+    "services": {
+        "title": "Our Services",
+        "subtitle": "Complete woodwork solutions from design to installation.",
+        "details": "Details"
+    },
+    "workflow": {
+        "title": "Our Workflow",
+        "subtitle": "From design to installation — a transparent and professional process."
+    },
+    "testimonial": {
+        "title": "Client Reviews"
+    },
+    "partner": {
+        "title": "Our Partners"
+    },
+    "contact": {
+        "title": "Contact Us!",
+        "subtitle": "Design your dream building with us. Request a free consultation or quote!",
+        "name": "Your Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "message": "Describe your idea...",
+        "send": "Send",
+        "success": "Message sent successfully! We will contact you shortly.",
+        "phoneLabel": "Phone",
+        "emailLabel": "Email",
+        "addressLabel": "Office",
+        "mapTitle": "Aula 2000 location"
+    },
+    "quote": {
+        "title": "Get a Quote",
+        "subtitle": "Quick contact or detailed configurator — choose the way that's convenient for you.",
+        "openConfigurator": "Open Premium Configurator"
+    },
+    "footer": {
+        "rights": "All rights reserved.",
+        "madeWith": "Made with",
+        "newsletterPlaceholder": "Subscribe to our newsletter...",
+        "newsletterConsent": "By subscribing you agree to receive our newsletter. You can unsubscribe",
+        "newsletterUnsubscribeHere": "here"
+    },
+    "blog": {
+        "title": "Blog",
+        "readMore": "Read more",
+        "backToList": "Back to posts"
+    },
+    "faq": {
+        "title": "Frequently Asked Questions"
+    },
+    "filter": {
+        "all": "All"
+    },
+    "beforeAfter": {
+        "title": "Our Transformations Before-After",
+        "before": "Before",
+        "after": "After"
+    },
+    "socialProof": {
+        "text1": "14 clients chose us this week",
+        "text2": "Request a free survey now"
+    },
+    "messages": {
+        "new": "new messages"
+    },
+    "pwa": {
+        "title": "Aula 2000 App",
+        "installTitle": "Add to Home Screen!",
+        "installDesc": "Faster loading, offline access and direct access from your phone or computer.",
+        "android": "Android (Chrome / Samsung)",
+        "androidDesc": "Tap the browser's top right",
+        "androidMenu": "dot",
+        "androidMenuEnd": "menu, then select",
+        "androidOption1": "Install app",
+        "androidOption2": "Add to Home screen",
+        "androidOptionEnd": "option.",
+        "ios": "iPhone / iPad (Safari)",
+        "iosDesc": "Tap the",
+        "iosShare": "Share",
+        "iosDescMid": "icon below",
+        "iosDescEnd": ", then scroll down and select",
+        "iosOption": "Add to Home Screen",
+        "iosOptionEnd": "option.",
+        "desktop": "Desktop (Chrome / Edge)",
+        "desktopDesc": "Click the",
+        "desktopInstall": "Install",
+        "desktopDescEnd": "icon on the right side of the address bar.",
+        "installBtn": "Install Now",
+        "okBtn": "OK, Got it"
+    },
+    "search": {
+        "label": "Search",
+        "placeholder": "Search projects, pages and blog posts...",
+        "close": "Close"
+    },
+    "ui": {
+        "menu": "Menu",
+        "themeToggle": "Dark/Light mode",
+        "quickContact": "Quick contact",
+        "phoneCall": "Call us",
+        "scrollToTop": "Scroll to top",
+        "close": "Close"
+    },
+    "lang": {
+        "hu": "Magyar",
+        "en": "English",
+        "de": "Deutsch"
+    }
+}

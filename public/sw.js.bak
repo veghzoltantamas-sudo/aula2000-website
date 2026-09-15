@@ -1,0 +1,149 @@
+const DEFAULT_CACHE = 'asztalospro-v0';
+const CORE_ASSETS = [
+  '/',
+  '/manifest.json',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png'
+];
+
+// A verziót cache-eljük, hogy ne kelljen MINDEN fetch eseménynél
+// szerver/network hívást indítani (korábban ön-DDoS-szerű volt).
+let cachedVersion = null;
+let versionFetchedAt = 0;
+const VERSION_TTL = 0; // 0ms (minden kérésnél)
+
+async function getVersionFromServer(force) {
+  const now = Date.now();
+  if (!force && cachedVersion && (now - versionFetchedAt) < VERSION_TTL) {
+    return cachedVersion;
+  }
+  try {
+    const res = await fetch('/api/sw-version', { cache: 'no-store' });
+    const data = await res.json();
+    cachedVersion = data.version || DEFAULT_CACHE;
+    versionFetchedAt = now;
+    return cachedVersion;
+  } catch {
+    return cachedVersion || DEFAULT_CACHE;
+  }
+}
+
+function fallbackImage(url) {
+  if (url.pathname.match(/\.(png|jpg|jpeg|gif|webp|svg|ico)$/i)) {
+    return caches.match('/icons/icon-512.png');
+  }
+  if (url.pathname.startsWith('/uploads/')) {
+    return caches.match('/icons/icon-512.png');
+  }
+  return caches.match('/') || caches.match('/index.html');
+}
+
+// Activation — törli az összes régi cache-t, ami nem az aktuális verzió
+async function cleanupOldCaches(currentCache) {
+  const keys = await caches.keys();
+  return Promise.all(
+    keys.filter(key => key !== currentCache).map(key => caches.delete(key))
+  );
+}
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    getVersionFromServer(true).then(version => {
+      const cacheName = `asztalospro-${version}`;
+      return cleanupOldCaches(cacheName).then(() => self.clients.claim());
+    })
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+
+  const requestUrl = new URL(event.request.url);
+  if (!requestUrl.origin.startsWith(self.location.origin)) return;
+
+  const isNavigation = requestUrl.mode === 'navigate';
+  const isStaticAsset = /\.(png|jpg|jpeg|gif|webp|svg|css|js|woff2?|ttf|ico|json)$/i.test(requestUrl.pathname);
+  const isAppRoute = requestUrl.pathname === '/' || requestUrl.pathname.startsWith('/project/') || requestUrl.pathname.startsWith('/page/');
+
+  // Navigáció: network-first + cache fallback
+  if (isNavigation) {
+    event.respondWith(
+      getVersionFromServer().then(version => {
+        const cacheName = `asztalospro-${version}`;
+        return fetch(event.request)
+          .then((response) => {
+            if (response && response.ok) {
+              const copy = response.clone();
+              caches.open(cacheName).then((cache) => cache.put(event.request, copy));
+            }
+            return response;
+          })
+          .catch(() => {
+            // Admin navigációt nem szabad a publikus főoldallal helyettesíteni.
+            if (requestUrl.pathname.startsWith('/admin')) {
+              return caches.match(event.request).then((cached) => cached || Response.error());
+            }
+            return caches.match('/');
+          });
+      })
+    );
+    return;
+  }
+
+  // Statikus fájlok: cache-first
+  event.respondWith(
+    getVersionFromServer().then(version => {
+      const cacheName = `asztalospro-${version}`;
+      return caches.match(event.request).then((cached) => {
+        if (cached) return cached;
+
+        return fetch(event.request)
+          .then((response) => {
+            if (!response || !response.ok) return response;
+            const shouldCache = isStaticAsset || isAppRoute;
+            if (shouldCache) {
+              const responseClone = response.clone();
+              caches.open(cacheName).then((cache) => cache.put(event.request, responseClone));
+            }
+            return response;
+          })
+          .catch(() => fallbackImage(requestUrl));
+      });
+    })
+  );
+});
+
+// --- PUSH ÉRTESÍTÉSEK ---
+self.addEventListener('push', (event) => {
+  let data = { title: 'AsztalosPro', body: 'Új frissítés érkezett!', url: '/' };
+  try {
+    if (event.data) data = event.data.json();
+  } catch (e) {}
+
+  const options = {
+    body: data.body,
+    icon: '/icons/icon-192.png',
+    badge: '/icons/icon-192.png',
+    data: { url: data.url || '/' },
+    vibrate: [100, 50, 100]
+  };
+
+  event.waitUntil(self.registration.showNotification(data.title || 'AsztalosPro', options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = event.notification.data && event.notification.data.url ? event.notification.data.url : '/';
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+      for (const client of windowClients) {
+        if (client.url.includes(new URL(url).pathname) && 'focus' in client) return client.focus();
+      }
+      if (clients.openWindow) return clients.openWindow(url);
+    })
+  );
+});

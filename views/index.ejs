@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+    <%- include('partials/index-head') %>
+    <% const pageHeroImage = (typeof settings !== 'undefined' && settings && settings.hero_image_url) ? settings.hero_image_url : ''; %>
+    <% if (pageHeroImage) { %>
+        <link rel="preload" as="image" href="<%= pageHeroImage %>" fetchpriority="high">
+    <% } %>
+    <link rel="stylesheet" href="/css/sticky.css">
+    <link rel="stylesheet" href="/css/aula-about.css">
+</head>
+<body>
+
+<% const optimizeImage = (src, width = 900) => {
+    if (!src) return 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=' + width + '&q=80';
+    if (src.startsWith('http')) {
+        const sep = src.includes('?') ? '&' : '?';
+        return src.includes('images.unsplash.com') ? `${src}${sep}auto=format&fit=crop&w=${width}&q=80` : src;
+    }
+    return '/uploads/' + src;
+}; %>
+
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <span class="navbar-brand-mark"><%= (content.brand_mark_text || 'PA').slice(0, 2).toUpperCase() %></span>
+            <span class="navbar-brand-copy">
+                <small><%= content.brand_line || 'Bespoke atelier' %></small>
+                <strong><%= content.site_title %></strong>
+            </span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-expanded="false" aria-label="<%= t('ui.menu') %>">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="nav">
+            <ul class="navbar-nav align-items-center">
+                <li class="nav-item"><a class="nav-link" href="#rolunk"><%= t('nav.about') %></a></li>
+                <li class="nav-item"><a class="nav-link" href="#szolgaltatasok"><%= t('nav.services') %></a></li>
+                <li class="nav-item"><a class="nav-link" href="#referenciak"><%= t('nav.projects') %></a></li>
+                <li class="nav-item"><a class="nav-link" href="/blog"><%= t('nav.blog') %></a></li>
+                <li class="nav-item"><a class="nav-link" href="#kapcsolat"><%= t('nav.contact') %></a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="pwaInstallNavBtn" role="button" data-bs-toggle="modal" data-bs-target="#pwaInstallModal"><i class="fa-solid fa-download me-1 text-warning"></i> <%= t('nav.app') %></a></li>
+                <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                    <button type="button" class="search-btn" id="searchToggle" aria-label="<%= t('search.label') %>"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </li>
+                <% if (settings.ugyfelkapu_enabled == '1') { %>
+                <li class="nav-item ms-lg-2 mt-2 mt-lg-0"><a class="nav-link nav-ugyfelkapu" href="/ugyfel/login" style="border:1px solid var(--gold, #d5ab5d);border-radius:20px;padding:6px 14px;"><i class="fa-solid fa-user-lock me-1"></i> <%= t('nav.clientPortal') %></a></li>
+                <% } %>
+                <% if (settings.enable_dark_mode == '1') { %>
+                <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                    <button type="button" class="theme-toggle-btn" id="themeToggle" aria-label="<%= t('ui.themeToggle') %>"><i class="fa-solid fa-sun"></i></button>
+                </li>
+                <% } %>
+                <li class="nav-item ms-lg-2 mt-2 mt-lg-0"><%- include('partials/lang-switcher', {compact: true}) %></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Language switcher: fix position on desktop -->
+<style>
+.navbar .lang-switcher{position:relative;display:inline-flex;vertical-align:middle}
+@media(min-width:992px){.navbar .lang-switcher{margin-left:0.5rem}}
+</style>
+<div class="search-overlay" id="searchOverlay" role="dialog" aria-modal="true" aria-label="<%= t('search.label') %>">
+    <button class="search-close" id="searchClose" aria-label="<%= t('search.close') %>"><i class="fa-solid fa-xmark"></i></button>
+    <div class="search-box">
+        <input type="search" id="searchInput" placeholder="<%= t('search.placeholder') %>" autocomplete="off">
+        <div class="search-results" id="searchResults"></div>
+    </div>
+</div>
+
+<div id="pwaSplash" class="pwa-splash" aria-hidden="true">
+    <div class="pwa-splash-card">
+        <div class="pwa-splash-mark"><i class="fa-solid fa-compass-drafting"></i></div>
+        <strong><%= (settings && settings.company_short_name) || 'Aula 2000' %></strong>
+        <span><%= content.brand_slogan || 'Crafted for the way you live' %></span>
+    </div>
+</div>
+
+<% const heroButtonText = content.hero_button_text || 'Referenciáink'; const heroButtonLink = content.hero_button_link || '#referenciak'; const heroSecondaryButtonText = content.hero_secondary_button_text || 'Ingyenes felmérés'; const heroSecondaryButtonLink = content.hero_secondary_button_link || '#kapcsolat'; const heroTertiaryButtonText = content.hero_tertiary_button_text || 'Ajánlatkérés'; const heroTertiaryButtonLink = content.hero_tertiary_button_link || '#kapcsolat'; const brandLine = content.brand_line || 'Bespoke atelier'; const brandSlogan = content.brand_slogan || 'Luxury interiors'; const heroBadgeText = content.hero_badge || 'Bespoke woodworking atelier'; const heroIntroPrimary = content.hero_intro_primary || 'Editorial luxury interiors'; const heroIntroSecondary = content.hero_intro_secondary || 'Egyszemélyes, prémium kivitelezés'; const heroImage = settings && settings.hero_image_url ? settings.hero_image_url : ''; const statYears = settings && settings.stat_years ? settings.stat_years : '15'; const statProjects = settings && settings.stat_projects ? settings.stat_projects : '350'; const statResponseHours = settings && settings.stat_response_hours ? settings.stat_response_hours : '24'; const promoActive = settings && (settings.promo_active === '1' || settings.promo_active === 1 || settings.promo_active === true); const promoDeadline = settings && settings.promo_end_date ? new Date(settings.promo_end_date).getTime() : Date.now() + (72 * 60 * 60 * 1000); const whatsappNumber = (settings && settings.whatsapp_number ? settings.whatsapp_number : '+36305555555').replace(/\s+/g, '').replace(/[^\d+]/g, ''); const whatsappMessage = encodeURIComponent((settings && settings.whatsapp_message) || 'Üdvözlöm! Szeretnék árajánlatot kérni.'); const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`; const faqItems = (() => { try { const items = JSON.parse((settings && settings.faq_items) || '[]'); return Array.isArray(items) ? items.filter(item => item && item.question && item.answer) : []; } catch { return []; } })(); %>
+<section class="hero" style="background: linear-gradient(120deg, rgba(6,8,10,0.86), rgba(16,17,20,0.68)), url('<%= heroImage %>') center/cover;">
+    <div class="container" data-aos="fade-up" data-aos-duration="1000">
+        <div class="hero-content">
+            <div class="hero-copy">
+                <div class="hero-badge"><i class="fa-solid fa-award"></i> <%= heroBadgeText %></div>
+                <div class="hero-intro">
+                    <span><%= heroIntroPrimary %></span>
+                    <span class="divider"></span>
+                    <span><%= heroIntroSecondary %></span>
+                </div>
+                <h1><%= content.hero_title %></h1>
+                <p><%= content.hero_subtitle %></p>
+                <div class="hero-actions">
+                    <a href="<%= heroButtonLink %>" class="btn-wood" <% if (String(heroButtonLink).startsWith('http')) { %>target="_blank" rel="noreferrer"<% } %>><i class="fa-solid fa-pencil-ruler me-2"></i> <%= heroButtonText %></a>
+                    <a href="<%= heroSecondaryButtonLink %>" class="btn-wood-secondary" <% if (String(heroSecondaryButtonLink).startsWith('http')) { %>target="_blank" rel="noreferrer"<% } %>><i class="fa-solid fa-calendar-check me-2"></i> <%= heroSecondaryButtonText %></a>
+                    <a href="<%= heroTertiaryButtonLink %>" class="btn-wood-outline" <% if (String(heroTertiaryButtonLink).startsWith('http')) { %>target="_blank" rel="noreferrer"<% } %>><i class="fa-solid fa-arrow-right me-2"></i> <%= heroTertiaryButtonText %></a>
+                </div>
+                <% if (promoActive) { %>
+                <div class="mt-4 d-inline-flex align-items-center gap-3 flex-wrap rounded-pill border px-3 py-2" style="background: rgba(10, 12, 15, 0.38); border-color: rgba(213,171,93,0.35) !important; backdrop-filter: blur(10px);">
+                    <span class="text-warning fw-bold"><i class="fa-solid fa-bolt me-2"></i> <%= t('hero.summerPromo') %></span>
+                    <span class="text-white-50"><%= t('hero.deadline') %></span>
+                    <strong id="promoCountdown" class="text-white" style="font-size:1.05rem; letter-spacing:0.08em;">00d 00:00:00</strong>
+                </div>
+                <% } %>
+                <div class="hero-trust-row">
+                    <div class="hero-trust-item"><i class="fa-solid fa-shield-heart"></i> <%= t('hero.trust1') %></div>
+                    <div class="hero-trust-item"><i class="fa-solid fa-ruler-combined"></i> <%= t('hero.trust2') %></div>
+                    <div class="hero-trust-item"><i class="fa-solid fa-location-dot"></i> <%= t('hero.trust3') %></div>
+                </div>
+            </div>
+            <div class="hero-side-panel">
+                <div class="hero-stat-panel">
+                    <div class="hero-panel-top">
+                        <span><%= t('hero.studio') %></span>
+                        <span class="hero-panel-status"><i class="fa-solid fa-circle-dot me-1"></i> <%= t('hero.active') %></span>
+                    </div>
+                    <div class="hero-stat-grid">
+                        <div class="hero-stat">
+                            <strong><%= statProjects %>+</strong>
+                            <span><%= t('hero.statProjects') %></span>
+                        </div>
+                        <div class="hero-stat">
+                            <strong><%= statYears %>+</strong>
+                            <span><%= t('hero.statYears') %></span>
+                        </div>
+                        <div class="hero-stat">
+                            <strong>3D</strong>
+                            <span><%= t('hero.statDesign') %></span>
+                        </div>
+                        <div class="hero-stat">
+                            <strong><%= statResponseHours %>h</strong>
+                            <span><%= t('hero.statResponse') %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="rolunk" class="section" style="margin-top: 60px;">
+    <div class="container">
+        <div class="about-surface about-full">
+            <h2 class="section-title" style="text-align: left; margin-bottom: 32px;"><%= t('about.title') %></h2>
+            <div class="about-content-html"><%- content.about_text %></div>
+            <div class="mt-4 d-flex align-items-center gap-3 flex-wrap">
+                <span class="badge-luxury"><%= t('about.guarantee') %></span>
+                <span class="badge-luxury"><%= t('about.design3d') %></span>
+                <span class="badge-luxury"><%= t('about.architectDesign') %></span>
+            </div>
+            <div class="mt-4">
+                <p class="fw-bold phone-line"><i class="fa-solid fa-phone me-2"></i> <%= content.contact_phone %></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="szolgaltatasok" class="section light-section">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up"><%= t('services.title') %></h2>
+        <div class="row g-4 mt-5 justify-content-center">
+            <% if (typeof services !== 'undefined' && services && services.length > 0) { %>
+                <% services.forEach((service, index) => { %>
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="<%= (index % 4) * 100 %>">
+                    <a href="/szolgaltatasok/<%= service.slug %>" class="service-box h-100 d-block text-decoration-none">
+                        <% if (service.image) { %>
+                            <div class="service-box-img-wrapper mb-3" style="border-radius: 12px; overflow: hidden; height: 180px;">
+                                <img src="<%= service.image.startsWith('http') ? service.image : '/uploads/' + service.image %>" alt="<%= service.title %>" class="w-100 h-100 object-fit-cover transition-transform" loading="lazy" decoding="async" fetchpriority="low" width="800" height="450">
+                            </div>
+                        <% } else { %>
+                            <div class="service-box-icon-wrapper mb-3 text-center" style="font-size: 3rem; color: var(--gold); padding: 2rem 0;">
+                                <i class="<%= service.icon || 'fa-solid fa-check' %>"></i>
+                            </div>
+                        <% } %>
+                        <h4 class="text-dark fw-bold mb-3"><%= service.title %></h4>
+                        <p class="text-muted"><%= service.short_desc %></p>
+                        <div class="text-wood fw-bold mt-auto pb-2"><%= t('services.details') %> <i class="fa-solid fa-arrow-right ms-1"></i></div>
+                    </a>
+                </div>
+                <% }) %>
+            <% } else { %>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+                    <div class="feature-box">
+                        <i class="fa-solid fa-ruler-combined"></i>
+                        <h4><%= content.feature1_title %></h4>
+                        <p><%= content.feature1_desc %></p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-box">
+                        <i class="fa-solid fa-cubes"></i>
+                        <h4><%= content.feature2_title %></h4>
+                        <p><%= content.feature2_desc %></p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-box">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                        <h4><%= content.feature3_title %></h4>
+                        <p><%= content.feature3_desc %></p>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<section id="munkafolyamat" class="section light-panel-section">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up"><%= t('workflow.title') %></h2>
+        <div class="row g-4">
+            <% if (workflows && workflows.length) { %>
+                <% workflows.forEach((workflow, index) => { %>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
+                    <a href="/munkafolyamatok/<%= workflow.slug %>" class="process-card process-card-link h-100">
+                        <% if (workflow.image) { %>
+                            <div class="process-card-image"><img src="<%= workflow.image.startsWith('http') ? workflow.image : '/uploads/' + workflow.image %>" alt="<%= workflow.title %>" loading="lazy" decoding="async" fetchpriority="low" width="800" height="450"></div>
+                        <% } %>
+                        <div class="step"><%= index + 1 %></div>
+                        <h4><i class="<%= workflow.icon || 'fa-solid fa-list-check' %> me-2 text-gold"></i><%= workflow.title %></h4>
+                        <p><%= workflow.short_desc %></p>
+                        <span class="process-card-link-label"><%= t('services.details') %> <i class="fa-solid fa-arrow-right ms-1"></i></span>
+                    </a>
+                </div>
+                <% }) %>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<% if (testimonials && testimonials.length) { %>
+<section class="section light-section">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up"><%= t('testimonial.title') %></h2>
+        <div class="row g-4 mt-3">
+            <% testimonials.forEach((item) => { %>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up">
+                <div class="testimonial-card h-100">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p>“<%= item.content %>”</p>
+                    <div class="testimonial-author"><%= item.author %></div>
+                    <div class="testimonial-role"><%= item.role %></div>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<% if (settings.enable_faq == '1' && faqItems.length) { %>
+<section id="gyik" class="section light-section faq-section">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up"><%= t('faq.title') %></h2>
+        <div class="faq-list" data-aos="fade-up">
+            <% faqItems.forEach(item => { %>
+            <details class="faq-item">
+                <summary class="faq-question"><%= item.question %></summary>
+                <div class="faq-answer"><%- item.answer %></div>
+            </details>
+            <% }) %>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<section id="referenciak" class="section">
+    <div class="container py-5">
+        <h2 class="section-title" data-aos="fade-up"><%= t('projects.title') %></h2>
+        <% const categories = [...new Set(projects.map(p => p.category).filter(Boolean))]; %>
+        <% if (settings.enable_gallery_filter == '1' && categories.length > 1) { %>
+        <div class="blog-filters" data-aos="fade-up" data-aos-delay="50" style="margin-top:1.5rem">
+            <a href="#" class="active gallery-filter-btn" data-category="all"><%= t('filter.all') %></a>
+            <% categories.forEach(cat => { %>
+            <a href="#" class="gallery-filter-btn" data-category="<%= cat %>"><%= cat %></a>
+            <% }) %>
+        </div>
+        <% } %>
+        <div class="row g-4 mt-4" id="gallery-grid">
+            <% if(projects.length === 0) { %>
+                <div class="col-12 text-center py-5">
+                    <i class="fa-solid fa-images fa-3x text-muted mb-3"></i>
+                    <p class="text-muted"><%= t('projects.empty') %></p>
+                </div>
+            <% } %>
+
+            <% projects.forEach((proj, i) => { %>
+            <div class="col-lg-4 col-md-6 gallery-item" data-category="<%= proj.category || '' %>" data-aos="fade-up" data-aos-delay="<%= (i%3)*100 %>">
+                <a href="/project/<%= proj.id %>" class="project-card">
+                    <img
+                        src="<%= optimizeImage(proj.cover, 760) %>"
+                        srcset="<%= optimizeImage(proj.cover, 480) %> 480w, <%= optimizeImage(proj.cover, 760) %> 760w, <%= optimizeImage(proj.cover, 1200) %> 1200w"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        alt="<%= proj.title %>"
+                        loading="lazy"
+                        decoding="async"
+                        fetchpriority="low"
+                        width="800"
+                        height="600">
+                    <div class="project-content">
+                        <span class="project-category"><%= proj.category %></span>
+                        <h3 class="project-title"><%= proj.title %></h3>
+                    </div>
+                </a>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</section>
+
+<% if (settings.before_after_enabled === '1' && beforeAfterItems && beforeAfterItems.length) { %>
+<section class="section light-panel-section" id="elotte-utana">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up"><%= t('beforeAfter.title') %></h2>
+        <% if (settings.before_after_section_subtitle) { %><p class="text-center text-muted mb-5" data-aos="fade-up"><%= settings.before_after_section_subtitle %></p><% } %>
+        <div class="row g-4 mt-1 justify-content-center">
+            <% beforeAfterItems.forEach(function(item) { %>
+            <div class="col-md-6 col-lg-4" data-aos="fade-up">
+                <div class="before-after-card">
+                    <div class="before-after-compare position-relative" style="border-radius:14px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,0.35);height:260px;--pos:50%;">
+                        <% const baBefore = item.before_image && item.before_image.startsWith('http') ? item.before_image : '/uploads/' + (item.before_image || ''); %>
+                        <% const baAfter = item.after_image && item.after_image.startsWith('http') ? item.after_image : '/uploads/' + (item.after_image || ''); %>
+                        <% if (baBefore) { %>
+                        <img src="<%= baBefore %>" alt="<%= t('beforeAfter.before') %>: <%= item.title %>" class="before-img" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;clip-path:inset(0 calc(100% - var(--pos,50%)) 0 0);z-index:1;">
+                        <% } %>
+                        <% if (baAfter) { %>
+                        <img src="<%= baAfter %>" alt="<%= t('beforeAfter.after') %>: <%= item.title %>" class="after-img" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;clip-path:inset(0 0 0 var(--pos,50%));z-index:2;">
+                        <% } %>
+                        <input type="range" class="before-after-slider" min="0" max="100" value="50" aria-label="<%= t('beforeAfter.before') %> / <%= t('beforeAfter.after') %>" style="position:absolute;top:0;left:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;z-index:6;">
+                        <div class="ba-divider" style="position:absolute;top:0;bottom:0;left:var(--pos,50%);width:3px;background:rgba(255,255,255,0.95);z-index:3;transform:translateX(-1.5px);pointer-events:none;box-shadow:0 0 10px rgba(0,0,0,0.35);"></div>
+                        <span class="ba-label ba-before" style="left:12px;"><%= t('beforeAfter.before') %></span>
+                        <span class="ba-label ba-after" style="right:12px;"><%= t('beforeAfter.after') %></span>
+                    </div>
+                    <div class="text-center mt-3">
+                        <h5 class="fw-bold mb-0"><%= item.title %></h5>
+                        <% if (item.description) { %><p class="text-muted small mb-0"><%= item.description %></p><% } %>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<% if (partners && partners.length) { %>
+<section class="section light-panel-section" style="padding-top: 90px; padding-bottom: 90px;">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up"><%= t('partner.title') %></h2>
+        <div class="row g-3 mt-2 justify-content-center">
+            <% partners.forEach((partner) => { %>
+            <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up">
+                <a class="partner-card" href="<%= partner.website || '#' %>" target="_blank" rel="noreferrer"><%= partner.name %></a>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<section id="kapcsolat" class="contact-section">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-5" data-aos="fade-right">
+                <h2 class="fw-bold mb-4" style="font-family: 'Lora', serif; font-size: 2.8rem;"><%= t('contact.title') %></h2>
+                <p class="mb-5 text-white-50"><%= t('contact.subtitle') %></p>
+
+                <div class="contact-info-item">
+                    <div class="contact-icon"><i class="fa-solid fa-phone fa-lg"></i></div>
+                    <div><h5 class="mb-0 fw-bold"><%= t('contact.phoneLabel') %></h5><span class="text-white-50"><%= content.contact_phone %></span></div>
+                </div>
+                <div class="contact-info-item">
+                    <div class="contact-icon"><i class="fa-solid fa-envelope fa-lg"></i></div>
+                    <div><h5 class="mb-0 fw-bold"><%= t('contact.emailLabel') %></h5><span class="text-white-50"><%= content.contact_email %></span></div>
+                </div>
+                <div class="contact-info-item mb-0">
+                    <div class="contact-icon"><i class="fa-solid fa-location-dot fa-lg"></i></div>
+                    <div><h5 class="mb-0 fw-bold"><%= t('contact.addressLabel') %></h5><span class="text-white-50"><%= content.contact_address %></span></div>
+                </div>
+                <div class="map-frame rounded-4 overflow-hidden border border-warning-subtle shadow-lg mb-4" style="max-width: 100%;">
+                    <iframe
+                        src="https://www.google.com/maps?q=<%= encodeURIComponent(content.contact_address || 'Budapest, Hungary') %>&output=embed"
+                        width="100%"
+                        height="260"
+                        style="border:0; display:block; min-height:260px;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Aula 2000 elhelyezkedés">
+                    </iframe>
+                </div>
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <% const fb = settings && settings.facebook_url ? settings.facebook_url : 'https://facebook.com/'; const ig = settings && settings.instagram_url ? settings.instagram_url : 'https://instagram.com/'; const yt = settings && settings.youtube_url ? settings.youtube_url : 'https://www.youtube.com/watch?v=eDWUCJwwzcc&t=5s'; %>
+                    <a href="<%= fb %>" target="_blank" rel="noreferrer" class="btn-wood-secondary"><i class="fa-brands fa-facebook-f me-2"></i> Facebook</a>
+                    <a href="<%= ig %>" target="_blank" rel="noreferrer" class="btn-wood-secondary"><i class="fa-brands fa-instagram me-2"></i> Instagram</a>
+                    <a href="<%= yt %>" target="_blank" rel="noreferrer" class="btn-wood-outline"><i class="fa-brands fa-youtube me-2"></i> YouTube</a>
+                </div>
+            </div>
+
+            <div class="col-lg-6 offset-lg-1" data-aos="fade-left">
+                <div class="contact-box">
+                    <h3 class="text-center mb-2 fw-bold text-white"><%= t('quote.title') %></h3>
+                    <p class="text-center text-white-50 small mb-4"><%= t('quote.subtitle') %></p>
+                    <a href="/quote" class="btn-wood-secondary w-100 text-center mb-4"><i class="fa-solid fa-sliders me-2"></i> <%= t('quote.openConfigurator') %></a>
+                    <% if(msg == 'sent') { %><div class="alert alert-success text-center fw-bold text-dark mb-4 border-0" style="background:#cd853f;"><%= t('contact.success') %></div><% } %>
+                    <form id="contact-form" action="/contact" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <!-- Honeypot: embereknek nem látható, spambotok kitöltik -->
+                        <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;overflow:hidden" aria-hidden="true">
+                            <label for="website">Ne töltse ki!</label>
+                            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+                        <input type="text" name="name" class="form-control" placeholder="<%= t('contact.name') %>" required>
+                        <input type="email" name="email" class="form-control" placeholder="<%= t('contact.email') %>" required>
+                        <input type="tel" name="phone" class="form-control" placeholder="<%= t('contact.phone') %>">
+                        <textarea name="message" class="form-control" rows="4" placeholder="<%= t('contact.message') %>" required></textarea>
+                        <button type="submit" class="btn-wood w-100 mt-2"><%= t('contact.send') %></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="socialProofToast" class="toast align-items-center text-bg-dark border-0 position-fixed top-0 end-0 m-3 d-none social-proof-toast" role="alert" aria-live="assertive" aria-atomic="true" style="border-radius: 16px; background: rgba(11, 13, 16, 0.9); border: 1px solid rgba(213,171,93,0.35) !important;">
+    <div class="d-flex align-items-center px-3 py-2">
+        <div class="me-3 text-warning"><i class="fa-solid fa-circle-check"></i></div>
+        <div>
+            <div class="fw-bold text-white"><%= t('socialProof.text1') %></div>
+            <div class="small text-white-50"><%= t('socialProof.text2') %></div>
+        </div>
+    </div>
+</div>
+
+<% if (settings.enable_floating_contact == '1') { %>
+<div class="floating-contact-actions" aria-label="<%= t('ui.quickContact') %>">
+    <a href="tel:<%= String(content.contact_phone || '').replace(/[^\d+]/g, '') %>" class="floating-contact floating-phone" aria-label="<%= t('ui.phoneCall') %>"><i class="fa-solid fa-phone"></i></a>
+    <a href="<%= whatsappLink %>" target="_blank" rel="noreferrer" class="floating-contact floating-whatsapp" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+</div>
+<% } %>
+
+<% if ((typeof unreadMessages !== 'undefined' && unreadMessages > 0)) { %>
+<div class="fixed-bottom d-none d-md-flex justify-content-end p-3" style="z-index: 9998;">
+    <div class="badge bg-danger rounded-pill shadow-lg" style="font-size: 0.9rem; padding: 0.85rem 1rem; letter-spacing: 0.04em;">
+        <i class="fa-solid fa-envelope me-2"></i> <%= unreadMessages %> <%= t('messages.new') %>
+    </div>
+</div>
+<% } %>
+
+
+
+
+<!-- Sticky CTA Header (mobile) -->
+<div class="sticky-cta-header" id="stickyCtaHeader">
+    <div class="container">
+        <div class="sticky-cta-content">
+            <a href="tel:<%= String(content.contact_phone || '').replace(/[^\d+]/g, '') %>" class="sticky-cta-phone">
+                <i class="fa-solid fa-phone"></i>
+                <span><%= content.contact_phone || '+36 30 555 5555' %></span>
+            </a>
+            <a href="#kapcsolat" class="sticky-cta-btn">
+                <i class="fa-solid fa-calendar-check me-2"></i>
+                <%= t('hero.ctaSecondary') %>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Scroll to top button -->
+<button id="scrollTopBtn" class="scroll-top-btn" aria-label="<%= t('ui.scrollToTop') %>">
+    <i class="fa-solid fa-chevron-up"></i>
+</button>
+
+
+
+< PWA Telepítés Modal -->
+<div class="modal fade" id="pwaInstallModal" tabindex="-1" aria-labelledby="pwaInstallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-white" style="background: #17191c; border: 1px solid rgba(212,176,107,0.3); border-radius: 16px;">
+            <div class="modal-header border-bottom border-secondary pb-3">
+                <h5 class="modal-title d-flex align-items-center gap-2" id="pwaInstallModalLabel">
+                    <span style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-deep));display:inline-flex;align-items:center;justify-content:center;color:#000;font-size:1.1rem;">
+                        <i class="fa-solid fa-download"></i>
+                    </span>
+                    <%= t('pwa.title') %>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="<%= t('ui.close') %>"></button>
+            </div>
+            <div class="modal-body py-4">
+                <div class="text-center mb-4">
+                    <img src="/icons/icon-192.png" alt="Aula 2000" style="width: 72px; height: 72px; border-radius: 18px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); border: 2px solid var(--gold);" class="mb-3">
+                    <h6 class="fw-bold mb-1"><%= t('pwa.installTitle') %></h6>
+                    <p class="text-white-50 small mb-0"><%= t('pwa.installDesc') %></p>
+                </div>
+
+                <div class="p-3 rounded-3 mb-3" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                    <div class="d-flex align-items-start gap-3 mb-2">
+                        <i class="fa-brands fa-android text-warning fs-5 mt-1"></i>
+                        <div>
+                            <div class="fw-bold small text-warning"><%= t('pwa.android') %></div>
+                            <div class="small text-white-50"><%= t('pwa.androidDesc') %> <strong><%= t('pwa.androidMenu') %></strong> <%= t('pwa.androidMenuEnd') %> <strong>"<%= t('pwa.androidOption1') %>"</strong> <%= t('pwa.androidOptionEnd') %> <strong>"<%= t('pwa.androidOption2') %>"</strong> <%= t('pwa.androidOptionEnd') %></div>
+                        </div>
+                    </div>
+                    <hr class="border-secondary my-2">
+                    <div class="d-flex align-items-start gap-3 mb-2">
+                        <i class="fa-brands fa-apple text-info fs-5 mt-1"></i>
+                        <div>
+                            <div class="fw-bold small text-info"><%= t('pwa.ios') %></div>
+                            <div class="small text-white-50"><%= t('pwa.iosDesc') %> <strong><%= t('pwa.iosShare') %></strong> <%= t('pwa.iosDescMid') %> <i class="fa-solid fa-arrow-up-from-bracket"></i>, <%= t('pwa.iosDescEnd') %> <strong>"<%= t('pwa.iosOption') %>"</strong> <%= t('pwa.iosOptionEnd') %></div>
+                        </div>
+                    </div>
+                    <hr class="border-secondary my-2">
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="fa-solid fa-desktop text-light fs-5 mt-1"></i>
+                        <div>
+                            <div class="fw-bold small text-light"><%= t('pwa.desktop') %></div>
+                            <div class="small text-white-50"><%= t('pwa.desktopDesc') %> <strong><%= t('pwa.desktopInstall') %></strong> <%= t('pwa.desktopDescEnd') %></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pwaDirectInstallWrap" class="d-none text-center">
+                    <button type="button" id="pwaDirectInstallBtn" class="btn btn-wood w-100 py-2 fw-bold">
+                        <i class="fa-solid fa-download me-2"></i> <%= t('pwa.installBtn') %>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer border-top border-secondary">
+                <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal"><%= t('pwa.okBtn') %></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/index-footer', { promoDeadline: promoDeadline }) %>
+<script>
+(function(){
+    function initBeforeAfter() {
+        var sliders = document.querySelectorAll('.before-after-slider');
+        sliders.forEach(function(slider) {
+            if (slider.dataset.bound) return;
+            slider.dataset.bound = '1';
+            var wrap = slider.closest('.before-after-compare');
+            if (!wrap) return;
+            function update(val) {
+                wrap.style.setProperty('--pos', val + '%');
+            }
+            var updateAll = function(){ update(parseInt(slider.value, 10) || 50); };
+            slider.addEventListener('input', updateAll);
+            updateAll();
+        });
+    }
+    document.addEventListener('DOMContentLoaded', initBeforeAfter);
+    if (document.readyState !== 'loading') initBeforeAfter();
+    window.addEventListener('load', initBeforeAfter);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+/* ===== Aula 2000 — Rólunk HTML tartalom (about-content-html) ===== */
+.about-content-html {
+    color: rgba(250,246,241,0.96);
+    font-size: 1.05rem;
+    line-height: 1.85;
+    text-align: left;
+}
+.about-content-html .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: center;
+}
+.about-content-html .col-lg-7,
+.about-content-html .col-lg-5 {
+    flex: 1 1 45%;
+    min-width: 320px;
+}
+.about-content-html .lead {
+    color: var(--accent, #d5ab5d);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: clamp(1rem, 3vw, 1.25rem);
+}
+.about-content-html .alert {
+    background: rgba(204,163,0,0.06);
+    border-left: 4px solid var(--accent, #cca300);
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+}
+.about-content-html .alert h5 { color: var(--light-text, #fff); }
+.about-content-html .alert p { color: rgba(250,246,241,0.75); }
+.about-content-html p {
+    color: rgba(250,246,241,0.92);
+    line-height: 1.85;
+    text-align: justify;
+    word-break: break-word;
+}
+.about-content-html strong { color: var(--accent, #d5ab5d); }
+.about-content-html h3 { color: var(--accent, #d5ab5d); }
+.about-content-html hr { border-color: var(--accent, #d5ab5d); opacity: 0.3; }
+.about-content-html .card {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    overflow: hidden;
+}
+.about-content-html .card .ratio {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+}
+.about-content-html .card .ratio iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+.about-content-html .text-muted { color: rgba(250,246,241,0.6) !important; }
+.about-content-html .text-center { text-align: center; }
+.about-content-html .fw-bold { font-weight: 700; }
+.about-content-html .small { font-size: 0.85rem; }
+.about-content-html .mb-3 { margin-bottom: 1rem; }
+.about-content-html .mb-4 { margin-bottom: 1.5rem; }
+.about-content-html .mt-2 { margin-top: 0.5rem; }
+.about-content-html .my-4 { margin: 1.5rem 0; }
+.about-content-html .fs-4 { font-size: 1.3rem; }
+.about-content-html .me-2 { margin-right: 0.5rem; }
+.about-content-html .text-primary { color: var(--accent, #cca300) !important; }
+@media (max-width: 992px) {
+    .about-content-html .col-lg-7,
+    .about-content-html .col-lg-5 {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+}
+.about-static h1, .about-static h2, .about-static h3, .about-static h4 { color: var(--accent, #d5ab5d); }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= file.original_name %> - Aula 2000</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <style>
+        :root{--gold:#c9a96e;--dark:#0f0f0f;--darker:#080808;--card:#161616;--text:#e8e0d4;--text-dim:rgba(232,224,212,0.55);--text-muted:rgba(232,224,212,0.35);--border:rgba(201,169,110,0.12);--border-hover:rgba(201,169,110,0.3)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--darker);color:var(--text);font-family:"Inter",sans-serif;min-height:100vh;display:flex;flex-direction:column}
+        a{text-decoration:none}
+        .viewer-nav{background:rgba(15,15,15,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0.7rem 0;display:flex;justify-content:space-between;align-items:center}
+        .viewer-nav .brand{color:var(--text);font-family:"Playfair Display",serif;font-weight:700;font-size:1.1rem}
+        .viewer-nav .brand span{color:var(--gold)}
+        .viewer-nav .file-name{color:var(--text-dim);font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:40%}
+        .viewer-nav .btn-ghost{color:var(--text-muted);font-size:0.8rem;padding:0.3rem 0.8rem;border:1px solid var(--border);border-radius:6px;transition:all 0.2s;cursor:pointer;background:none}
+        .viewer-nav .btn-ghost:hover{color:var(--gold);border-color:var(--border-hover)}
+        .viewer-nav .btn-primary{background:var(--gold);color:var(--dark);border:1px solid var(--gold);font-size:0.8rem;padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-weight:500;transition:all 0.2s}
+        .viewer-nav .btn-primary:hover{background:#dfc692}
+        .viewer-content{flex:1;display:flex;align-items:center;justify-content:center;padding:1rem}
+        .viewer-content img{max-width:95vw;max-height:85vh;object-fit:contain;border-radius:8px;box-shadow:0 4px 30px rgba(0,0,0,0.5)}
+        .viewer-content iframe{width:90vw;height:80vh;border:none;border-radius:8px;background:white}
+        .viewer-content pre{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;overflow:auto;max-width:90vw;max-height:80vh;font-size:0.85rem;line-height:1.6;color:var(--text-dim)}
+        .file-info{padding:0.8rem;text-align:center;color:var(--text-muted);font-size:0.75rem}
+        .unsupported{text-align:center;padding:4rem 2rem}
+        .unsupported i{font-size:4rem;color:rgba(201,169,110,0.2);margin-bottom:1rem}
+        .unsupported h3{color:var(--text-dim);font-weight:500;margin-bottom:0.5rem}
+        .unsupported p{color:var(--text-muted);font-size:0.85rem}
+        .viewer-content img{transition:transform 0.3s;cursor:zoom-in}
+        .viewer-content img.zoomed{max-width:none;max-height:none;cursor:zoom-out;transform:scale(1.5);transform-origin:center}
+        .viewer-content{opacity:0;animation:fadeIn 0.4s ease forwards}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    </style>
+</head>
+<body>
+<nav class="viewer-nav">
+    <div style="display:flex;align-items:center;gap:1rem;flex:1;min-width:0;">
+        <a href="/ugyfel/projekt" class="brand">AULA <span>2000</span></a>
+        <span class="file-name"><i class="fa-solid fa-file me-1" style="color:var(--gold);"></i> <%= file.original_name %></span>
+    </div>
+    <div style="display:flex;gap:0.6rem;align-items:center;">
+        <% if(isImage) { %><span style="color:var(--text-muted);font-size:0.75rem;"><%= file.size ? (file.size/1024).toFixed(0)+' KB' : '' %></span><% } %>
+        <% if(isImage) { %>
+        <button class="btn-ghost" id="btn-zoom" title="Nagyitas"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+        <button class="btn-ghost" id="btn-fullscreen" title="Teljes kepernyo"><i class="fa-solid fa-maximize"></i></button>
+        <% } %>
+        <a class="btn-ghost" href="/ugyfel/projekt"><i class="fa-solid fa-arrow-left me-1"></i> Vissza</a>
+        <a class="btn-primary" href="<%= fileUrl %>?dl=1"><i class="fa-solid fa-download me-1"></i> Letoltes</a>
+    </div>
+</nav>
+<div class="viewer-content">
+    <% if(isImage) { %>
+        <img src="<%= fileUrl %>" alt="<%= file.original_name %>" id="viewer-img">
+    <% } else if(isPdf) { %>
+        <iframe src="<%= fileUrl %>"></iframe>
+    <% } else if(isText) { %>
+        <pre>Tartalom betoltese...</pre>
+        <script>
+        fetch('<%= fileUrl %>').then(r=>r.text()).then(t=>{document.querySelector('pre').textContent=t}).catch(e=>{document.querySelector('pre').textContent='Nem sikerult betolteni a tartalmat.'});
+        </script>
+    <% } else { %>
+        <div class="unsupported">
+            <i class="fa-solid fa-file-circle-question"></i>
+            <h3><%= file.original_name %></h3>
+            <p>Ez a fajltipus (<%= file.mime_type || 'ismeretlen' %>) nem tekintheto meg közvetlenul a böngeszoben.</p>
+            <p style="margin-top:1rem;">
+                <a href="<%= fileUrl %>?dl=1" style="display:inline-block;padding:0.6rem 1.5rem;background:var(--gold);color:var(--dark);border-radius:6px;font-weight:500;font-size:0.9rem;"><i class="fa-solid fa-download me-1"></i> Fajl letoltese</a>
+            </p>
+        </div>
+    <% } %>
+</div>
+<div class="file-info">
+    <%= file.mime_type || '' %> <% if(file.size) { %> &mdash; <%= (file.size/1024).toFixed(1)+' KB' %><% } %>
+</div>
+<script>
+function toggleZoom() {
+    var img = document.getElementById('viewer-img');
+    if(img) img.classList.toggle('zoomed');
+}
+function toggleFullscreen() {
+    var el = document.documentElement;
+    if(!document.fullscreenElement) {
+        (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+    } else {
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    }
+}
+document.getElementById('btn-zoom').addEventListener('click', toggleZoom);
+document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
+document.getElementById('viewer-img').addEventListener('click', toggleZoom);
+document.addEventListener('keydown', function(e) {
+    if(e.key === 'Escape') {
+        var img = document.getElementById('viewer-img');
+        if(img && img.classList.contains('zoomed')) { img.classList.remove('zoomed'); e.preventDefault(); }
+    }
+    if(e.key === 'f' || e.key === 'F') toggleFullscreen();
+});
+</script>
+</body>
+</html>

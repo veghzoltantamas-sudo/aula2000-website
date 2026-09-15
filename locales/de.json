@@ -1,0 +1,159 @@
+{
+    "nav": {
+        "home": "Startseite",
+        "services": "Dienstleistungen",
+        "projects": "Projekte",
+        "workflow": "Arbeitsablauf",
+        "blog": "Blog",
+        "about": "Über uns",
+        "contact": "Kontakt",
+        "quote": "Angebot anfordern",
+        "clientPortal": "Kunden-Login",
+        "app": "App"
+    },
+    "hero": {
+        "badge": "Individuelle Holzarbeiten",
+        "title": "Individuelle Möbel, die Ihr Zuhause formen",
+        "subtitle": "Wir entwerfen Küchenmöbel, Einbausysteme und individuelle Holzarbeiten, die den Alltag elegant und komfortabel gestalten.",
+        "cta": "Unsere Projekte",
+        "ctaSecondary": "Kostenlose Besichtigung",
+        "ctaQuote": "Angebot anfordern",
+        "trust1": "Garantie",
+        "trust2": "3D-Entwurf",
+        "trust3": "Ortsbesichtigung",
+        "active": "Aktiv",
+        "studio": "Luxury studio",
+        "statProjects": "Projekte",
+        "statYears": "Jahre",
+        "statDesign": "Entwurf",
+        "statResponse": "Antwort",
+        "summerPromo": "Sommerangebot",
+        "deadline": "Gültig bis:"
+    },
+    "about": {
+        "title": "Über uns",
+        "guarantee": "Garantie",
+        "design3d": "3D-Entwurf",
+        "architectDesign": "Architektenplanung"
+    },
+    "features": {
+        "freeSurvey": "Kostenlose Besichtigung",
+        "freeSurveyDesc": "Ortsbesichtigung und Expertenberatung.",
+        "3dDesign": "3D-Entwurf",
+        "3dDesignDesc": "Sehen Sie das Ergebnis noch vor der Fertigung.",
+        "qualityWork": "Präzise Verarbeitung",
+        "qualityWorkDesc": "Pünktlich, mit größter Sorgfalt und Garantie."
+    },
+    "projects": {
+        "title": "Unsere Projekte",
+        "subtitle": "Unsere neuesten Arbeiten, auf die wir besonders stolz sind.",
+        "empty": "Noch keine Projekte hochgeladen."
+    },
+    "services": {
+        "title": "Unsere Dienstleistungen",
+        "subtitle": "Komplette Holzarbeiten von der Planung bis zur Montage.",
+        "details": "Details"
+    },
+    "workflow": {
+        "title": "Unser Arbeitsablauf",
+        "subtitle": "Von der Planung bis zur Montage — transparent und professionell."
+    },
+    "testimonial": {
+        "title": "Kundenbewertungen"
+    },
+    "partner": {
+        "title": "Unsere Partner"
+    },
+    "contact": {
+        "title": "Schreiben Sie uns!",
+        "subtitle": "Gestalten Sie mit uns Ihr Traumgebäude. Fordern Sie eine kostenlose Beratung oder ein Angebot an!",
+        "name": "Ihr Name",
+        "email": "E-Mail-Adresse",
+        "phone": "Telefonnummer",
+        "message": "Beschreiben Sie Ihre Idee...",
+        "send": "Senden",
+        "success": "Nachricht erfolgreich gesendet! Wir melden uns in Kürze.",
+        "phoneLabel": "Telefon",
+        "emailLabel": "E-Mail",
+        "addressLabel": "Büro",
+        "mapTitle": "Aula 2000 Standort"
+    },
+    "quote": {
+        "title": "Angebot anfordern",
+        "subtitle": "Schneller Kontakt oder detaillierter Konfigurator – wählen Sie Ihren Weg.",
+        "openConfigurator": "Premium-Konfigurator öffnen"
+    },
+    "footer": {
+        "rights": "Alle Rechte vorbehalten.",
+        "madeWith": "Erstellt mit",
+        "newsletterPlaceholder": "Abonnieren Sie unseren Newsletter...",
+        "newsletterConsent": "Mit dem Abonnieren stimmen Sie zu, unseren Newsletter zu erhalten. Sie können sich jederzeit",
+        "newsletterUnsubscribeHere": "hier"
+    },
+    "blog": {
+        "title": "Blog",
+        "readMore": "Weiterlesen",
+        "backToList": "Zurück zu Beiträgen"
+    },
+    "faq": {
+        "title": "Häufig gestellte Fragen"
+    },
+    "filter": {
+        "all": "Alle"
+    },
+    "beforeAfter": {
+        "title": "Unsere Verwandlungen Vorher-Nachher",
+        "before": "Vorher",
+        "after": "Nachher"
+    },
+    "socialProof": {
+        "text1": "14 Kunden haben sich diese Woche für uns entschieden",
+        "text2": "Fordern Sie jetzt eine kostenlose Besichtigung an"
+    },
+    "messages": {
+        "new": "neue Nachrichten"
+    },
+    "pwa": {
+        "title": "Aula 2000 App",
+        "installTitle": "Zum Startbildschirm hinzufügen!",
+        "installDesc": "Schnelleres Laden, Offline-Zugriff und direkter Zugriff vom Handy oder Computer.",
+        "android": "Android (Chrome / Samsung)",
+        "androidDesc": "Tippen Sie oben rechts auf das",
+        "androidMenu": "Drei-Punkte",
+        "androidMenuEnd": "Menü und wählen Sie",
+        "androidOption1": "App installieren",
+        "androidOption2": "Zum Startbildschirm",
+        "androidOptionEnd": "aus.",
+        "ios": "iPhone / iPad (Safari)",
+        "iosDesc": "Tippen Sie unten auf das",
+        "iosShare": "Teilen",
+        "iosDescMid": "Symbol",
+        "iosDescEnd": ", scrollen Sie nach unten und wählen Sie",
+        "iosOption": "Zum Home-Bildschirm",
+        "iosOptionEnd": "aus.",
+        "desktop": "Desktop (Chrome / Edge)",
+        "desktopDesc": "Klicken Sie auf das",
+        "desktopInstall": "Installieren",
+        "desktopDescEnd": "Symbol rechts in der Adressleiste.",
+        "installBtn": "Jetzt installieren",
+        "okBtn": "OK, verstanden"
+    },
+    "search": {
+        "label": "Suchen",
+        "placeholder": "Projekte, Seiten und Blogbeiträge durchsuchen...",
+        "close": "Schließen"
+    },
+    "ui": {
+        "menu": "Menü",
+        "themeToggle": "Dunkel/Hell-Modus",
+        "quickContact": "Schnellkontakt",
+        "phoneCall": "Anrufen",
+        "scrollToTop": "Nach oben",
+        "close": "Schließen"
+    },
+    "lang": {
+        "hu": "Magyar",
+        "en": "English",
+        "de": "Deutsch"
+    }
+}

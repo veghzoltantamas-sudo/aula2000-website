@@ -1,0 +1,80 @@
+/* AsztalosPro — login oldal stílusai */
+        :root {
+            --bg: #090b0d;
+            --panel: rgba(17, 20, 22, 0.96);
+            --panel-strong: #12171a;
+            --gold: #d7b36a;
+            --gold-strong: #f4d49a;
+            --text: #f5efe9;
+            --muted: #b8b0a8;
+            --line: rgba(255,255,255,0.08);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(120deg, rgba(8,9,11,0.9), rgba(18,20,23,0.8)), url('https://images.unsplash.com/photo-1512411933973-100dd1d73a7d?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            margin: 0;
+        }
+        .login-box {
+            background: linear-gradient(180deg, rgba(17,20,22,0.98), rgba(13,15,17,1));
+            padding: 38px 32px 30px;
+            border-radius: 22px;
+            box-shadow: 0 28px 60px rgba(0,0,0,0.45);
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid var(--line);
+        }
+        .login-box h3 {
+            color: var(--text);
+            font-size: 2.1rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-bottom: 26px;
+            text-align: center;
+        }
+        .login-box .brand-accent { color: var(--gold-strong); }
+        .form-control {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text);
+            border-radius: 12px;
+            padding: 13px 14px;
+            margin-bottom: 18px;
+        }
+        .form-control::placeholder { color: rgba(255,255,255,0.45); }
+        .form-control:focus {
+            border-color: rgba(215,179,106,0.5);
+            box-shadow: 0 0 0 0.2rem rgba(215,179,106,0.12);
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+        }
+        .btn-wood {
+            background: linear-gradient(180deg, #d9b56c, #a67c38);
+            color: #101010;
+            font-weight: 800;
+            padding: 14px 18px;
+            border-radius: 12px;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            border: none;
+            transition: 0.25s ease;
+            box-shadow: 0 14px 30px rgba(215,179,106,0.23);
+        }
+        .btn-wood:hover {
+            background: linear-gradient(180deg, #f4d594, #bf8e42);
+            color: #111;
+            transform: translateY(-1px);
+        }
+        .alert-danger {
+            background: rgba(255,95,95,0.1);
+            border: 1px solid rgba(255,95,95,0.3);
+            color: #ffd3d3;
+            border-radius: 10px;
+        }

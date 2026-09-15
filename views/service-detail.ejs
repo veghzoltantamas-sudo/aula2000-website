@@ -1,0 +1,106 @@
+<%- include('partials/index-head', { 
+    pageTitle: service.title + ' | ' + settings.site_title,
+    pageDesc: service.short_desc || settings.site_description,
+    metaImage: service.image ? (service.image.startsWith('http') ? service.image : settings.site_url + '/uploads/' + service.image) : '',
+    ogType: 'article'
+}) %>
+
+<link rel="stylesheet" href="/css/service.css">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top py-3">
+    <div class="container">
+        <a class="navbar-brand text-warning fw-bold fs-3" style="letter-spacing:1px;" href="/">
+            <i class="fa-solid fa-compass-drafting me-2"></i><%= settings.site_title %>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navBar">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 fw-semibold fs-6 px-3">
+                <li class="nav-item"><a class="nav-link" href="/">Kezdőlap</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#szolgaltatasok">Szolgáltatások</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#referenciak">Referenciák</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#rolunk">Rólunk</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#kapcsolat">Kapcsolat</a></li>
+                <li class="nav-item ms-lg-3"><a class="btn btn-warning fw-bold mt-2 mt-lg-0" href="/quote">Ajánlatkérés</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="service-page">
+    <!-- Hero / Header -->
+    <header class="service-hero bg-dark text-white position-relative" style="<%= service.image ? `background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(18,18,18,1)), url('${service.image.startsWith('http') ? service.image : "/uploads/" + service.image}') center/cover no-repeat;` : '' %>">
+        <div class="container position-relative z-1 h-100 d-flex flex-column justify-content-center pt-5">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/" class="text-white-50 text-decoration-none">Kezdőlap</a></li>
+                    <li class="breadcrumb-item"><a href="/#szolgaltatasok" class="text-white-50 text-decoration-none">Szolgáltatások</a></li>
+                    <li class="breadcrumb-item active text-gold" aria-current="page"><%= service.title %></li>
+                </ol>
+            </nav>
+            <div class="row align-items-center mt-3 mt-md-5">
+                <div class="col-lg-8" data-aos="fade-up">
+                    <h1 class="display-3 fw-bold text-white mb-4"><i class="<%= service.icon || 'fa-solid fa-check' %> text-gold me-3"></i><%= service.title %></h1>
+                    <p class="lead text-light mb-5 fs-4" style="max-width: 800px; opacity: 0.9;"><%= service.short_desc %></p>
+                    <a href="/quote?service=<%= service.slug %>" class="btn btn-warning btn-lg px-5 py-3 fw-bold rounded-pill text-dark shadow-sm">
+                        <i class="fa-solid fa-calculator me-2"></i> Ingyenes ajánlatkérés
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tartalom -->
+    <section class="section py-5 service-content-section bg-white text-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8" data-aos="fade-up">
+                    <div class="service-description content-formatted">
+                        <% if(service.description) { %>
+                            <%- service.description %>
+                        <% } else { %>
+                            <p class="text-muted">A szolgáltatás részletes leírása hamarosan feltöltésre kerül.</p>
+                        <% } %>
+                    </div>
+                    <% if (service.gallery && service.gallery.length) { %>
+                    <div class="workflow-detail-gallery mt-5">
+                        <h3 class="fw-bold mb-3">További megoldások</h3>
+                        <div class="row g-3">
+                            <% service.gallery.forEach((image, index) => { %>
+                            <div class="col-sm-6"><img src="<%= image.startsWith('http') ? image : '/uploads/' + image %>" alt="<%= service.title %> - <%= index + 1 %>. kép" loading="lazy" decoding="async" width="800" height="520" class="workflow-detail-gallery-image"></div>
+                            <% }) %>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+                <div class="col-lg-4 mt-5 mt-lg-0" data-aos="fade-left">
+                    <div class="contact-card sticky-top" style="top: 100px; background: var(--bg-light); border-radius: 12px; padding: 2rem; border-left: 4px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                        <h4 class="fw-bold mb-4">Kérdése van?</h4>
+                        <p class="text-muted mb-4">Szívesen válaszolunk minden felmerülő kérdésére ezzel a szolgáltatással kapcsolatban.</p>
+                        
+                        <ul class="list-unstyled mb-4">
+                            <% if (settings.contact_phone) { %>
+                            <li class="mb-3 d-flex align-items-center">
+                                <div class="icon-circle me-3"><i class="fa-solid fa-phone text-gold"></i></div>
+                                <a href="tel:<%= settings.contact_phone %>" class="text-dark text-decoration-none fw-bold fs-5"><%= settings.contact_phone %></a>
+                            </li>
+                            <% } %>
+                            <% if (settings.contact_email) { %>
+                            <li class="mb-3 d-flex align-items-center">
+                                <div class="icon-circle me-3"><i class="fa-solid fa-envelope text-gold"></i></div>
+                                <a href="mailto:<%= settings.contact_email %>" class="text-dark text-decoration-none fw-semibold"><%= settings.contact_email %></a>
+                            </li>
+                            <% } %>
+                        </ul>
+                        
+                        <a href="/#kapcsolat" class="btn btn-outline-dark w-100 py-2"><i class="fa-solid fa-message me-2"></i> Üzenet küldése</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<%- include('partials/index-footer', { settings }) %>

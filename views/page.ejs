@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#d5ab5d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/icons/icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <title><%= page ? page.title : 'Oldal nem található' %> | <%= content.site_title || 'Aula 2000' %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/page.css">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="page-topbar">
+            <a class="brand" href="/">Építész Iroda</a>
+            <a class="nav-link" href="/">Vissza a főoldalra</a>
+        </header>
+
+        <% if (page) { %>
+        <section class="page-hero">
+            <h1><%= page.title %></h1>
+        </section>
+        <main class="page-body">
+            <%- blocksHtml %>
+        </main>
+        <% } else { %>
+        <section class="page-hero">
+            <h1>Oldal nem található</h1>
+            <p class="page-block-paragraph">Ez az oldal még nem publikált, vagy törölve lett.</p>
+        </section>
+        <% } %>
+    </div>
+    <script src="/js/page.js"></script>
+</body>
+</html>

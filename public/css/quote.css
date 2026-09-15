@@ -1,0 +1,11 @@
+/* AsztalosPro — quote oldal stílusai */
+        :root { --ink:#15191d; --gold:#b7863d; --cream:#f7f2eb; --muted:#64686d; }
+        body { margin:0; color:var(--ink); background:linear-gradient(135deg,#f7f2eb,#fff); font-family:'Open Sans',sans-serif; }
+        h1,h2 { font-family:Lora,serif; } .quote-hero { padding:70px 0 35px; }
+        .quote-card { background:#fff; border:1px solid rgba(183,134,61,.28); border-radius:20px; padding:32px; box-shadow:0 20px 60px rgba(35,25,12,.1); }
+        .form-label { font-weight:700; font-size:.78rem; letter-spacing:.04em; text-transform:uppercase; }
+        .form-control,.form-select { border-color:#ddd2c3; padding:12px 14px; }
+        .form-control:focus,.form-select:focus { border-color:var(--gold); box-shadow:0 0 0 .2rem rgba(183,134,61,.15); }
+        .btn-gold { background:#b7863d; color:#fff; border:0; padding:14px 24px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; }
+        .btn-gold:hover { background:#8d632b; color:#fff; }
+        .step { color:var(--gold); font-size:.75rem; text-transform:uppercase; letter-spacing:.14em; font-weight:700; }

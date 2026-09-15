@@ -1,0 +1,79 @@
+<%- include('partials/index-head', {
+    pageTitle: workflow.title + ' | ' + (content.site_title || 'Aula 2000'),
+    pageDesc: workflow.short_desc || '',
+    metaImage: workflow.image ? (workflow.image.startsWith('http') ? workflow.image : '/uploads/' + workflow.image) : '',
+    ogType: 'article'
+}) %>
+
+<link rel="stylesheet" href="/css/service.css">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top py-3">
+    <div class="container">
+        <a class="navbar-brand text-warning fw-bold fs-3" href="/"><i class="fa-solid fa-compass-drafting me-2"></i><%= content.site_title || 'Aula 2000' %></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBar"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navBar">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 fw-semibold fs-6 px-3">
+                <li class="nav-item"><a class="nav-link" href="/">Kezdőlap</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#munkafolyamat">Munkafolyamat</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#szolgaltatasok">Szolgáltatások</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#kapcsolat">Kapcsolat</a></li>
+                <li class="nav-item ms-lg-3"><a class="btn btn-warning fw-bold mt-2 mt-lg-0" href="/quote">Ajánlatkérés</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="service-page">
+    <header class="service-hero bg-dark text-white position-relative" style="<%= workflow.image ? `background: linear-gradient(to bottom, rgba(0,0,0,0.42), rgba(18,18,18,1)), url('${workflow.image.startsWith('http') ? workflow.image : '/uploads/' + workflow.image}') center/cover no-repeat;` : '' %>">
+        <div class="container position-relative z-1 h-100 d-flex flex-column justify-content-center pt-5">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/" class="text-white-50 text-decoration-none">Kezdőlap</a></li>
+                    <li class="breadcrumb-item"><a href="/#munkafolyamat" class="text-white-50 text-decoration-none">Munkafolyamat</a></li>
+                    <li class="breadcrumb-item active text-gold" aria-current="page"><%= workflow.title %></li>
+                </ol>
+            </nav>
+            <div class="row align-items-center mt-3 mt-md-5">
+                <div class="col-lg-8" data-aos="fade-up">
+                    <h1 class="display-3 fw-bold text-white mb-4"><i class="<%= workflow.icon || 'fa-solid fa-list-check' %> text-gold me-3"></i><%= workflow.title %></h1>
+                    <p class="lead text-light mb-5 fs-4" style="max-width: 800px; opacity: 0.9;"><%= workflow.short_desc %></p>
+                    <a href="/#kapcsolat" class="btn btn-warning btn-lg px-5 py-3 fw-bold rounded-pill text-dark shadow-sm"><i class="fa-solid fa-message me-2"></i> Kezdjük el együtt</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="section py-5 service-content-section bg-white text-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8" data-aos="fade-up">
+                    <div class="service-description content-formatted">
+                        <%- workflow.description || '<p>A részletes leírás hamarosan feltöltésre kerül.</p>' %>
+                    </div>
+                    <% if (workflow.gallery && workflow.gallery.length) { %>
+                    <div class="workflow-detail-gallery mt-5">
+                        <h3 class="fw-bold mb-3">A munkafolyamat részletei</h3>
+                        <div class="row g-3">
+                            <% workflow.gallery.forEach((image, index) => { %>
+                            <div class="col-sm-6">
+                                <img src="<%= image.startsWith('http') ? image : '/uploads/' + image %>" alt="<%= workflow.title %> - <%= index + 1 %>. kép" loading="lazy" decoding="async" width="800" height="520" class="workflow-detail-gallery-image">
+                            </div>
+                            <% }) %>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+                <div class="col-lg-4 mt-5 mt-lg-0" data-aos="fade-left">
+                    <div class="contact-card sticky-top" style="top: 100px; background: var(--bg-light); border-radius: 12px; padding: 2rem; border-left: 4px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                        <div class="text-gold fs-2 mb-3"><i class="<%= workflow.icon || 'fa-solid fa-list-check' %>"></i></div>
+                        <h4 class="fw-bold mb-3">Így dolgozunk</h4>
+                        <p class="text-muted mb-4">Átlátható lépésekben haladunk, hogy az elképzelésből pontos és örömteli végeredmény szülessen.</p>
+                        <a href="/#kapcsolat" class="btn btn-outline-dark w-100 py-2"><i class="fa-solid fa-calendar-check me-2"></i> Felmérés kérése</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<%- include('partials/index-footer', { settings }) %>
