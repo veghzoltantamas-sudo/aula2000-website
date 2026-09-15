@@ -4,7 +4,7 @@
    Stratégia: navigáció → network-first, statikus → cache-first
    ============================================================ */
 
-var CACHE_PREFIX = 'aula2000-v20260915c-';
+var CACHE_PREFIX = 'aula2000-v20260915-PDF-FIX-';
 var FALLBACK_ICON = '/icons/icon-192.png';
 var OFFLINE_PAGE = '/offline.html';
 
@@ -49,8 +49,8 @@ self.addEventListener('fetch', function (event) {
   /* Csak azonos origin */
   if (url.origin !== location.origin) return;
 
-  /* API hívásokat nem kezeljük cache-sel */
-  if (url.pathname.indexOf('/api/') === 0) return;
+  /* API és FÁJL hívásokat nem kezeljük cache-sel, hogy a PDF-ek hiba nélkül nyíljanak */
+  if (url.pathname.indexOf('/api/') === 0 || url.pathname.indexOf('/fajl/') !== -1) return;
 
   /* Navigáció → network-first */
   if (request.mode === 'navigate') {
