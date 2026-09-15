@@ -112,7 +112,7 @@ function createClientRouter(deps){
             const fp=path.join(CLIENT_DIR, file.stored_name);
             if(!fsSync.existsSync(fp)) return res.status(404).render("error",{ code:404, message:"A fajl nem talalhato a szerveren.", backUrl:"/ugyfel/projekt" });
             const dl=req.query.dl==='1';
-            res.setHeader('Content-Type', file.mime_type || 'application/octet-stream');
+            res.setHeader('Content-Type', (file.mime_type && file.mime_type !== 'application/octet-stream') ? file.mime_type : (path.extname(file.original_name).toLowerCase() === '.pdf' ? 'application/pdf' : (file.mime_type || 'application/octet-stream')));
             const isImage=String(file.mime_type||'').startsWith('image/');
             const isPdf=String(file.mime_type||'')==='application/pdf';
             if(dl || (!isImage && !isPdf)) res.setHeader('Content-Disposition','attachment; filename="'+String(file.original_name).replace(/"/g,'')+'"');

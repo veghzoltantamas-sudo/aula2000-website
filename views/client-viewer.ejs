@@ -1,102 +1,74 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= file.original_name %> - Aula 2000</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <%- include('partials/index-head') %>
+    <title><%= file.original_name %> - Ügyfélkapu</title>
     <style>
-        :root{--gold:#c9a96e;--dark:#0f0f0f;--darker:#080808;--card:#161616;--text:#e8e0d4;--text-dim:rgba(232,224,212,0.55);--text-muted:rgba(232,224,212,0.35);--border:rgba(201,169,110,0.12);--border-hover:rgba(201,169,110,0.3)}
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--darker);color:var(--text);font-family:"Inter",sans-serif;min-height:100vh;display:flex;flex-direction:column}
-        a{text-decoration:none}
-        .viewer-nav{background:rgba(15,15,15,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0.7rem 0;display:flex;justify-content:space-between;align-items:center}
-        .viewer-nav .brand{color:var(--text);font-family:"Playfair Display",serif;font-weight:700;font-size:1.1rem}
-        .viewer-nav .brand span{color:var(--gold)}
-        .viewer-nav .file-name{color:var(--text-dim);font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:40%}
-        .viewer-nav .btn-ghost{color:var(--text-muted);font-size:0.8rem;padding:0.3rem 0.8rem;border:1px solid var(--border);border-radius:6px;transition:all 0.2s;cursor:pointer;background:none}
-        .viewer-nav .btn-ghost:hover{color:var(--gold);border-color:var(--border-hover)}
-        .viewer-nav .btn-primary{background:var(--gold);color:var(--dark);border:1px solid var(--gold);font-size:0.8rem;padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-weight:500;transition:all 0.2s}
-        .viewer-nav .btn-primary:hover{background:#dfc692}
-        .viewer-content{flex:1;display:flex;align-items:center;justify-content:center;padding:1rem}
-        .viewer-content img{max-width:95vw;max-height:85vh;object-fit:contain;border-radius:8px;box-shadow:0 4px 30px rgba(0,0,0,0.5)}
-        .viewer-content iframe{width:90vw;height:80vh;border:none;border-radius:8px;background:white}
-        .viewer-content pre{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;overflow:auto;max-width:90vw;max-height:80vh;font-size:0.85rem;line-height:1.6;color:var(--text-dim)}
-        .file-info{padding:0.8rem;text-align:center;color:var(--text-muted);font-size:0.75rem}
-        .unsupported{text-align:center;padding:4rem 2rem}
-        .unsupported i{font-size:4rem;color:rgba(201,169,110,0.2);margin-bottom:1rem}
-        .unsupported h3{color:var(--text-dim);font-weight:500;margin-bottom:0.5rem}
-        .unsupported p{color:var(--text-muted);font-size:0.85rem}
-        .viewer-content img{transition:transform 0.3s;cursor:zoom-in}
-        .viewer-content img.zoomed{max-width:none;max-height:none;cursor:zoom-out;transform:scale(1.5);transform-origin:center}
-        .viewer-content{opacity:0;animation:fadeIn 0.4s ease forwards}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        body, html { height: 100%; margin: 0; background: #1a1a1a; overflow: hidden; font-family: sans-serif; color: #fff; }
+        .viewer-container { display: flex; flex-direction: column; height: 100vh; }
+        .viewer-header { background: #222; color: #fff; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; flex-shrink: 0; z-index: 10; }
+        .viewer-header h1 { font-size: 0.95rem; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45%; font-weight: normal; color: #eee; }
+        .viewer-content { flex-grow: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #1a1a1a; }
+        .viewer-content img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .viewer-content iframe { width: 100%; height: 100%; border: none; background: #fff; display: block; }
+        .btn-close { color: #888; text-decoration: none; font-size: 1.8rem; line-height: 1; transition: color 0.2s; padding: 0 5px; }
+        .btn-close:hover { color: #fff; }
+        .viewer-actions { display: flex; gap: 8px; align-items: center; }
+        .btn-action { background: #444; color: #eee; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.8rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #555; }
+        .btn-action:hover { background: #555; color: #fff; border-color: #777; }
+        .btn-primary-action { background: #ca8a04; border-color: #eab308; color: #fff; }
+        .btn-primary-action:hover { background: #a16207; border-color: #ca8a04; }
+        
+        .mobile-pdf-view { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; }
+        .mobile-pdf-view i { font-size: 4rem; color: #ca8a04; margin-bottom: 20px; }
+        .mobile-pdf-view h2 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+        .mobile-pdf-view p { font-size: 0.9rem; color: #888; margin-bottom: 25px; max-width: 250px; }
+        .btn-large { padding: 12px 24px; font-size: 1rem; border-radius: 8px; }
+
+        @media (max-width: 768px) {
+            .desktop-only-iframe { display: none !important; }
+            .mobile-pdf-view { display: flex !important; }
+            .viewer-header h1 { max-width: 35%; }
+        }
     </style>
 </head>
 <body>
-<nav class="viewer-nav">
-    <div style="display:flex;align-items:center;gap:1rem;flex:1;min-width:0;">
-        <a href="/ugyfel/projekt" class="brand">AULA <span>2000</span></a>
-        <span class="file-name"><i class="fa-solid fa-file me-1" style="color:var(--gold);"></i> <%= file.original_name %></span>
+    <div class="viewer-container">
+        <header class="viewer-header">
+            <h1><%= file.original_name %></h1>
+            <div class="viewer-actions">
+                <a href="<%= fileUrl %>?dl=1" class="btn-action" title="Letöltés">
+                    <i class="bi bi-download"></i> <span class="d-none d-sm-inline">Letöltés</span>
+                </a>
+                <a href="/ugyfel/projekt" class="btn-close" title="Bezárás">&times;</a>
+            </div>
+        </header>
+        <main class="viewer-content">
+            <% if (isImage) { %>
+                <img src="<%= fileUrl %>" alt="<%= file.original_name %>">
+            <% } else if (isPdf) { %>
+                <iframe src="<%= fileUrl %>" class="desktop-only-iframe" title="PDF megjelenítő"></iframe>
+                <div class="mobile-pdf-view">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    <h2>PDF Dokumentum</h2>
+                    <p><%= file.original_name %></p>
+                    <a href="<%= fileUrl %>" target="_blank" class="btn-action btn-primary-action btn-large">
+                        <i class="bi bi-box-arrow-up-right"></i> Dokumentum megnyitása
+                    </a>
+                </div>
+            <% } else if (isVideo) { %>
+                <video controls autoplay style="max-width: 100%; max-height: 100%;">
+                    <source src="<%= fileUrl %>" type="<%= file.mime_type %>">
+                    A böngészője nem támogatja a videó lejátszását.
+                </video>
+            <% } else { %>
+                <div style="color: #fff; text-align: center; padding: 20px;">
+                    <i class="bi bi-file-earmark-lock" style="font-size: 3rem; color: #444; margin-bottom: 15px; display: block;"></i>
+                    <p>Ez a fájltípus nem tekinthető meg közvetlenül.</p>
+                    <a href="<%= fileUrl %>?dl=1" class="btn-action btn-primary-action">Fájl letöltése</a>
+                </div>
+            <% } %>
+        </main>
     </div>
-    <div style="display:flex;gap:0.6rem;align-items:center;">
-        <% if(isImage) { %><span style="color:var(--text-muted);font-size:0.75rem;"><%= file.size ? (file.size/1024).toFixed(0)+' KB' : '' %></span><% } %>
-        <% if(isImage) { %>
-        <button class="btn-ghost" id="btn-zoom" title="Nagyitas"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
-        <button class="btn-ghost" id="btn-fullscreen" title="Teljes kepernyo"><i class="fa-solid fa-maximize"></i></button>
-        <% } %>
-        <a class="btn-ghost" href="/ugyfel/projekt"><i class="fa-solid fa-arrow-left me-1"></i> Vissza</a>
-        <a class="btn-primary" href="<%= fileUrl %>?dl=1"><i class="fa-solid fa-download me-1"></i> Letoltes</a>
-    </div>
-</nav>
-<div class="viewer-content">
-    <% if(isImage) { %>
-        <img src="<%= fileUrl %>" alt="<%= file.original_name %>" id="viewer-img">
-    <% } else if(isPdf) { %>
-        <iframe src="<%= fileUrl %>"></iframe>
-    <% } else if(isText) { %>
-        <pre>Tartalom betoltese...</pre>
-        <script>
-        fetch('<%= fileUrl %>').then(r=>r.text()).then(t=>{document.querySelector('pre').textContent=t}).catch(e=>{document.querySelector('pre').textContent='Nem sikerult betolteni a tartalmat.'});
-        </script>
-    <% } else { %>
-        <div class="unsupported">
-            <i class="fa-solid fa-file-circle-question"></i>
-            <h3><%= file.original_name %></h3>
-            <p>Ez a fajltipus (<%= file.mime_type || 'ismeretlen' %>) nem tekintheto meg közvetlenul a böngeszoben.</p>
-            <p style="margin-top:1rem;">
-                <a href="<%= fileUrl %>?dl=1" style="display:inline-block;padding:0.6rem 1.5rem;background:var(--gold);color:var(--dark);border-radius:6px;font-weight:500;font-size:0.9rem;"><i class="fa-solid fa-download me-1"></i> Fajl letoltese</a>
-            </p>
-        </div>
-    <% } %>
-</div>
-<div class="file-info">
-    <%= file.mime_type || '' %> <% if(file.size) { %> &mdash; <%= (file.size/1024).toFixed(1)+' KB' %><% } %>
-</div>
-<script>
-function toggleZoom() {
-    var img = document.getElementById('viewer-img');
-    if(img) img.classList.toggle('zoomed');
-}
-function toggleFullscreen() {
-    var el = document.documentElement;
-    if(!document.fullscreenElement) {
-        (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
-    } else {
-        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
-    }
-}
-document.getElementById('btn-zoom').addEventListener('click', toggleZoom);
-document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
-document.getElementById('viewer-img').addEventListener('click', toggleZoom);
-document.addEventListener('keydown', function(e) {
-    if(e.key === 'Escape') {
-        var img = document.getElementById('viewer-img');
-        if(img && img.classList.contains('zoomed')) { img.classList.remove('zoomed'); e.preventDefault(); }
-    }
-    if(e.key === 'f' || e.key === 'F') toggleFullscreen();
-});
-</script>
 </body>
 </html>
