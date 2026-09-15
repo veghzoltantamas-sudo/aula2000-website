@@ -115,23 +115,26 @@ function createClientRouter(deps){
             res.setHeader('Content-Type', (file.mime_type && file.mime_type !== 'application/octet-stream') ? file.mime_type : (path.extname(file.original_name).toLowerCase() === '.pdf' ? 'application/pdf' : (file.mime_type || 'application/octet-stream')));
             const isImage=String(file.mime_type||'').startsWith('image/');
             const isPdf=String(file.mime_type||'')==='application/pdf';
-            if(dl || (!isImage && !isPdf)) res.setHeader('Content-Disposition','attachment; filename="'+String(file.original_name).replace(/"/g,'')+'"');
-            else {
-                // PDF esetén minden létező biztonsági fejlécet törlünk a fájl válaszából,
-                // hogy a mobil böngészők natív PDF olvasói ne blokkolják a tartalamt.
-                if (isPdf) {
-                    res.removeHeader('Content-Security-Policy');
-                    res.removeHeader('X-Frame-Options');
-                    res.removeHeader('X-Content-Type-Options');
-                    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-                    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
-                    res.setHeader('X-Accel-Buffering', 'no');
-                    // Mobilon (különösen iOS-en) a tiszta Content-Type a legbiztosabb
-                    res.setHeader('Content-Type', 'application/pdf');
-                    // Ha nem letöltést kértek, akkor megpróbáljuk elhagyni a disposition-t, hátha az zavar
-                    if (!dl) return res.sendFile(fp);
-                }
-                res.setHeader('Content-Disposition','inline');
+            // PDF esetén mindig kényszerítjük a letöltést/megnyitást mellékletként
+            if (isPdf) {
+                // Biztosítjuk, hogy a Content-Type application/pdf legyen
+                res.setHeader('Content-Type', 'application/pdf');
+                res.removeHeader('Content-Security-Policy');
+                res.removeHeader('X-Frame-Options');
+                res.removeHeader('X-Content-Type-Options');
+                res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+                res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate'); // Ne cache-elje a fejléceket
+                res.setHeader('X-Accel-Buffering', 'no'); // Proxy-nak szóló utasítás
+                res.setHeader('Content-Disposition', `attachment; filename="${String(file.original_name).replace(/"/g,'')}"`);
+                return res.sendFile(fp);
+            }
+
+            // Egyéb fájltípusok (kép, videó stb.)
+            // Ha a ?dl=1 paramétert küldték, vagy nem inline megjeleníthető típus
+            if(dl || (!isImage && !isVideo && !isText && !isOffice)) {
+                res.setHeader('Content-Disposition',`attachment; filename="${String(file.original_name).replace(/"/g,'')}"`);
+            } else { // Alapértelmezésben inline megjelenítés
+                res.setHeader('Content-Disposition',`inline; filename="${String(file.original_name).replace(/"/g,'')}"`);
             }
             return res.sendFile(fp);
         }catch(err){ next(err); }
