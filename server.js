@@ -73,14 +73,20 @@ if (config.trustProxy) {
 }
 
 // Biztonság és Rate Limiting
-// Helmet alapbeállítások, a CSP-t finomhangoljuk (nem kapcsoljuk ki teljesen):
-// - default-src 'self' : helyi erőforrások
-// - img-src : engedi az Unsplash/CDN képeket és adat: URI-ket
-// - style-src : engedi az inline style-okat (EJS inline CSS miatt) és CDN fontokat
-// - script-src : CDN scriptek + inline (EJS inline JS miatt), 'unsafe-inline' az EJS-ek miatt
-// - upgradeInsecureRequests: null → KIKAPCSOLVA! Ha HTTP-n (helyi IP) aktív, minden kattintást
-//   HTTPS-re ír át, ami helyi IP-n nem elérhető → "hivatkozások nem működnek". HTTPS (Cloudflare)
-//   esetén sem kell, a CF már eleve HTTPS-t használ.
+app.use((req, res, next) => {
+    // Ha PDF-et kérnek, a helmet ne kényszerítsen CSP-t, mert blokkolja a mobil nézőket
+    if (req.path.includes('/fajl/') && (req.path.endsWith('.pdf') || !req.path.includes('.'))) {
+        return helmet({
+            contentSecurityPolicy: false,
+            crossOriginEmbedderPolicy: false,
+            crossOriginOpenerPolicy: false,
+            crossOriginResourcePolicy: false
+        })(req, res, next);
+    }
+    next();
+});
+
+// Helmet alapbeállítások a többi oldalhoz
 app.use(helmet({
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
     contentSecurityPolicy: {
@@ -91,8 +97,8 @@ app.use(helmet({
             fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "data:"],
             imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://*.unsplash.com", "blob:"],
             connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://fonts.gstatic.com"],
-            frameSrc: ["'self'", "https://www.google.com", "https://maps.google.com", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
-            objectSrc: ["'none'"],
+            frameSrc: ["'self'", "blob:", "https://www.google.com", "https://maps.google.com", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
+            objectSrc: ["'self'"],
             baseUri: ["'self'"],
             formAction: ["'self'"],
             upgradeInsecureRequests: null // Törli a helmet default upgrade-insecure-requests direktíváját

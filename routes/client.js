@@ -116,7 +116,17 @@ function createClientRouter(deps){
             const isImage=String(file.mime_type||'').startsWith('image/');
             const isPdf=String(file.mime_type||'')==='application/pdf';
             if(dl || (!isImage && !isPdf)) res.setHeader('Content-Disposition','attachment; filename="'+String(file.original_name).replace(/"/g,'')+'"');
-            else res.setHeader('Content-Disposition','inline; filename="'+String(file.original_name).replace(/"/g,'')+'"');
+            else {
+                // Mobilon az ékezetes filenév az inline disposition-ben néha zavart okoz
+                res.setHeader('Content-Disposition','inline');
+                // PDF esetén lazítunk minden létező védelmen, hogy a mobil nézők be tudják tölteni
+                if (isPdf) {
+                    res.removeHeader('X-Frame-Options');
+                    res.removeHeader('Content-Security-Policy');
+                    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+                    res.setHeader('Cache-Control', 'public, max-age=3600');
+                }
+            }
             return res.sendFile(fp);
         }catch(err){ next(err); }
     });
