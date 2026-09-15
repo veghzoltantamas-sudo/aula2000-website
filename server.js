@@ -73,10 +73,10 @@ if (config.trustProxy) {
 }
 
 // Biztonság és Rate Limiting
-// CSP teljesen kikapcsolva, mert a mobil böngészők PDF olvasóit blokkolja.
-// A többi alapvető helmet védelem megmarad.
+// CSP és X-Frame-Options teljesen kikapcsolva, mert a mobil böngészők PDF olvasóit blokkolja.
 app.use(helmet({
     contentSecurityPolicy: false,
+    frameguard: false, // Ez kapcsolja ki az X-Frame-Options: SAMEORIGIN fejlécet!
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
     crossOriginEmbedderPolicy: false,
     crossOriginOpenerPolicy: false,
