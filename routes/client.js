@@ -124,7 +124,11 @@ function createClientRouter(deps){
                     res.removeHeader('X-Frame-Options');
                     res.removeHeader('X-Content-Type-Options');
                     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-                    res.setHeader('Cache-Control', 'public, max-age=3600');
+                    // Kényszerítsük a böngészőt, hogy ne cache-elje a régi hibás fejléceket
+                    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+                    res.setHeader('Pragma', 'no-cache');
+                    res.setHeader('Expires', '0');
+                    res.setHeader('X-Accel-Buffering', 'no');
                 }
                 res.setHeader('Content-Disposition','inline');
             }

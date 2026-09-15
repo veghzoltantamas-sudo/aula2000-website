@@ -74,9 +74,9 @@ if (config.trustProxy) {
 
 // Biztonság és Rate Limiting
 app.use((req, res, next) => {
-    // Ha fájlról vagy fájl nézőről van szó, teljesen kihagyjuk a helmet-et,
-    // hogy a mobil PDF olvasók ne ütközzenek biztonsági korlátokba.
-    if (req.path.includes('/fajl/')) {
+    // Ha bármilyen fájl-kérés vagy néző érkezik, teljesen hagyjuk ki a helmet-et.
+    // A regulex-et használjuk, hogy biztosan elkapja az /ugyfel/fajl és /fajl kezdetűeket is.
+    if (req.url.includes('/fajl/') || req.url.includes('/view')) {
         return next();
     }
     // Minden más oldalra mehet a helmet
