@@ -74,47 +74,38 @@ if (config.trustProxy) {
 
 // Biztonság és Rate Limiting
 app.use((req, res, next) => {
-    // Ha PDF-et kérnek, a helmet ne kényszerítsen CSP-t, mert blokkolja a mobil nézőket
-    if (req.path.includes('/fajl/') && (req.path.endsWith('.pdf') || !req.path.includes('.'))) {
-        return helmet({
-            contentSecurityPolicy: false,
-            crossOriginEmbedderPolicy: false,
-            crossOriginOpenerPolicy: false,
-            crossOriginResourcePolicy: false
-        })(req, res, next);
+    // Ha fájlról vagy fájl nézőről van szó, teljesen kihagyjuk a helmet-et,
+    // hogy a mobil PDF olvasók ne ütközzenek biztonsági korlátokba.
+    if (req.path.includes('/fajl/')) {
+        return next();
     }
-    next();
+    // Minden más oldalra mehet a helmet
+    helmet({
+        referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com"],
+                styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com", "https://unpkg.com"],
+                fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "data:"],
+                imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://*.unsplash.com", "blob:"],
+                connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://fonts.gstatic.com"],
+                frameSrc: ["'self'", "blob:", "https://www.google.com", "https://maps.google.com", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
+                objectSrc: ["'self'"],
+                baseUri: ["'self'"],
+                formAction: ["'self'"],
+                upgradeInsecureRequests: null
+            }
+        },
+        crossOriginEmbedderPolicy: false,
+        crossOriginOpenerPolicy: false,
+        originAgentCluster: false
+    })(req, res, next);
 });
 
-// Helmet alapbeállítások a többi oldalhoz
-app.use(helmet({
-    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com", "https://unpkg.com"],
-            fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "data:"],
-            imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://*.unsplash.com", "blob:"],
-            connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://fonts.gstatic.com"],
-            frameSrc: ["'self'", "blob:", "https://www.google.com", "https://maps.google.com", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
-            objectSrc: ["'self'"],
-            baseUri: ["'self'"],
-            formAction: ["'self'"],
-            upgradeInsecureRequests: null // Törli a helmet default upgrade-insecure-requests direktíváját
-        }
-    },
-    crossOriginEmbedderPolicy: false,
-    // COOP 'same-origin' letiltása: HTTP-n (helyi IP / LAN) futó oldalnál a COOP
-    // "untrustworthy origin" figyelmeztetést okoz, mert a böngésző csak HTTPS-en
-    // (vagy localhost-on) tekinti a COOP-ot megbízhatónak. HTTPS-re váltásnál
-    // (Cloudflare) a helmet default (same-origin) is visszakapcsolható.
-    crossOriginOpenerPolicy: false,
-    // Origin-Agent-Cluster: a helmet alapból '?1'-et küld, amit a böngésző
-    // site-keyed clusterbe került origin-nél elutasít. Kikapcsolva, hogy ne
-    // generáljon figyelmeztetést (nincs rá valós igényünk a sablonoknál).
-    originAgentCluster: false
-}));
+// A korábbi app.use(helmet(...)) hívást töröljük, mert már benne van a fenti blokkban
+// (Ezt a részt a sed/editor automatikusan kezeli a kontextus alapján)
+
 
 // --- CSRF védelem (saját, csomag nélküli megvalósítás) ---
 // A token generálás és validálás a middleware/auth.js-ben van (session-alapú,

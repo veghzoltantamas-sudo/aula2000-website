@@ -117,15 +117,16 @@ function createClientRouter(deps){
             const isPdf=String(file.mime_type||'')==='application/pdf';
             if(dl || (!isImage && !isPdf)) res.setHeader('Content-Disposition','attachment; filename="'+String(file.original_name).replace(/"/g,'')+'"');
             else {
-                // Mobilon az ékezetes filenév az inline disposition-ben néha zavart okoz
-                res.setHeader('Content-Disposition','inline');
-                // PDF esetén lazítunk minden létező védelmen, hogy a mobil nézők be tudják tölteni
+                // PDF esetén minden létező biztonsági fejlécet törlünk a fájl válaszából,
+                // hogy a mobil böngészők natív PDF olvasói ne blokkolják a tartalamt.
                 if (isPdf) {
-                    res.removeHeader('X-Frame-Options');
                     res.removeHeader('Content-Security-Policy');
+                    res.removeHeader('X-Frame-Options');
+                    res.removeHeader('X-Content-Type-Options');
                     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
                     res.setHeader('Cache-Control', 'public, max-age=3600');
                 }
+                res.setHeader('Content-Disposition','inline');
             }
             return res.sendFile(fp);
         }catch(err){ next(err); }
