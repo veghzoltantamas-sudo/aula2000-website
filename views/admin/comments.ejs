@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Hozzászólások — Admin</title>
+    <%- include('../partials/admin-head') %>
+    <style>
+        .comment-card { background: var(--panel); border: 1px solid rgba(212,176,107,0.2); border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+        .comment-author { color: var(--gold); font-weight: 600; }
+        .comment-email { color: rgba(212,176,107,0.7); font-size: 0.85rem; }
+        .comment-text { color: rgba(245,239,232,0.9); margin: 1rem 0; padding: 0.8rem; background: rgba(0,0,0,0.2); border-left: 2px solid rgba(212,176,107,0.3); }
+        .comment-actions { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+        .comment-status { padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
+        .status-pending { background: rgba(255,193,7,0.2); color: #ffc107; }
+        .status-approved { background: rgba(76,175,80,0.2); color: #90ee90; }
+    </style>
+</head>
+<body>
+    <%- include('../partials/admin-nav') %>
+    <div class="container mt-4">
+        <h1 class="text-gold mb-4">📝 Blog Hozzászólások</h1>
+        <% if (msg) { %>
+            <div class="alert alert-success alert-dismissible fade show">
+                <%= msg %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <% } %>
+        <% if (comments.length === 0) { %>
+            <p class="text-muted">Nincsenek hozzászólások.</p>
+        <% } else { %>
+            <% comments.forEach(c => { %>
+                <div class="comment-card">
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <div class="comment-author"><%= c.name %></div>
+                            <div class="comment-email"><%= c.email %></div>
+                        </div>
+                        <span class="comment-status <%= c.is_approved ? 'status-approved' : 'status-pending' %>">
+                            <%= c.is_approved ? '✅ Közzétéve' : '⏳ Vár' %>
+                        </span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: rgba(212,176,107,0.8); margin: 0.5rem 0;">
+                        📄 <a href="/blog/<%= c.slug %>" target="_blank" style="color: var(--gold);"><%= c.title %></a>
+                    </div>
+                    <div class="comment-text"><%= c.content %></div>
+                    <div class="comment-actions">
+                        <% if (!c.is_approved) { %>
+                            <form action="/admin/blog/comment-approve/<%= c.id %>" method="POST" style="display:inline;">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <button class="btn btn-sm btn-success">✅ Jóváhagyás</button>
+                            </form>
+                        <% } else { %>
+                            <form action="/admin/blog/comment-reject/<%= c.id %>" method="POST" style="display:inline;">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <button class="btn btn-sm btn-warning">⚠️ Elutasítás</button>
+                            </form>
+                        <% } %>
+                        <form action="/admin/blog/comment-delete/<%= c.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Törlöd?');">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button class="btn btn-sm btn-danger">🗑️ Törlés</button>
+                        </form>
+                    </div>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+    <%- include('../partials/admin-scripts') %>
+</body>
+</html>

@@ -1844,6 +1844,54 @@ function createAdminRouter(deps) {
         } catch (err) { next(err); }
     });
 
+    /* ============================================================
+       BLOG HOZZÁSZÓLÁSOK KEZELÉSE
+       ============================================================ */
+    router.get("/blog/comments", requireLogin, requireNotViewer, async (req, res, next) => {
+        try {
+            const comments = await dbAll(
+                `SELECT c.*, bp.title, bp.slug FROM comments c 
+                 LEFT JOIN blog_posts bp ON c.post_id = bp.id 
+                 ORDER BY c.created_at DESC`
+            ).catch(() => []);
+            
+            res.render("admin/comments", { 
+                comments,
+                nav: "comments",
+                content: await getContentMap(),
+                settings: await getSettingsMap(),
+                msg: req.query.msg
+            });
+        } catch (err) { next(err); }
+    });
+
+    router.post("/blog/comment-approve/:id", requireLogin, requireNotViewer, requireCsrf, async (req, res, next) => {
+        try {
+            const commentId = req.params.id;
+            await dbRun("UPDATE comments SET is_approved = 1 WHERE id = ?", [commentId]);
+            activityLog("info", `Hozzászólás jóváhagyva: ID ${commentId}`, req.ip, "POST", req.originalUrl);
+            res.redirect("/admin/blog/comments?msg=Hozzaszolas_jovahagyva");
+        } catch (err) { next(err); }
+    });
+
+    router.post("/blog/comment-reject/:id", requireLogin, requireNotViewer, requireCsrf, async (req, res, next) => {
+        try {
+            const commentId = req.params.id;
+            await dbRun("UPDATE comments SET is_approved = 0 WHERE id = ?", [commentId]);
+            activityLog("info", `Hozzászólás elutasítva: ID ${commentId}`, req.ip, "POST", req.originalUrl);
+            res.redirect("/admin/blog/comments?msg=Hozzaszolas_elutasitva");
+        } catch (err) { next(err); }
+    });
+
+    router.post("/blog/comment-delete/:id", requireLogin, requireNotViewer, requireCsrf, async (req, res, next) => {
+        try {
+            const commentId = req.params.id;
+            await dbRun("DELETE FROM comments WHERE id = ?", [commentId]);
+            activityLog("info", `Hozzászólás törölve: ID ${commentId}`, req.ip, "POST", req.originalUrl);
+            res.redirect("/admin/blog/comments?msg=Hozzaszolas_torolve");
+        } catch (err) { next(err); }
+    });
+
     return router;
 }
 
