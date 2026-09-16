@@ -55,28 +55,29 @@
             
             <div class="comment-list">
                 <% if (comments.length === 0) { %>
-                    <p class="text-muted italic">Még nincs hozzászólás. Legyen Ön az első!</p>
+                    <div class="comment-empty">Még nincsenek hozzászólások. Légy az első!</div>
                 <% } else { %>
                     <% comments.forEach(comment => { %>
-                        <div class="comment-item p-4 mb-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="comment-item">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <strong class="text-gold"><%= comment.name %></strong>
                                 <small class="text-muted"><%= new Date(comment.created_at).toLocaleDateString('hu-HU') %></small>
                             </div>
-                            <p class="mb-0 text-light opacity-75"><%= comment.content %></p>
+                            <p class="mb-0"><%= comment.content %></p>
                         </div>
                     <% }) %>
                 <% } %>
             </div>
 
-            <div class="comment-form-container mt-5 p-4 rounded-4" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(212,176,107,0.2);">
-                <h4 id="comment-form" class="mb-3 text-gold">Szóljon hozzá</h4>
+            <div class="comment-form-container">
+                <h4 id="comment-form" class="mb-3">Szóljon hozzá</h4>
                 <% if (commentMsg === 'comment_sent') { %>
                     <div class="alert alert-success">Köszönjük! A hozzászólást elküldtük moderációra, jóváhagyás után jelenik meg.</div>
                 <% } else if (commentMsg === 'missing_fields') { %>
                     <div class="alert alert-danger">Hiba: Minden mező kitöltése kötelező!</div>
                 <% } %>
                 <form action="/blog/<%= post.slug %>/comment" method="POST" class="mt-4">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label text-muted small">Név</label>
