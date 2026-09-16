@@ -321,7 +321,6 @@ function createPublicRouter(deps) {
                 comments,
                 commentMsg: req.query.msg,
                 currentUrl: req.protocol + '://' + req.get('host') + req.originalUrl,
-                csrfToken: req.csrfToken(),
                 escapeHtml 
             });
         } catch (err) { next(err); }

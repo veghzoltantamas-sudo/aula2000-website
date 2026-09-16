@@ -23,3 +23,33 @@
         .related-card h4 a { color: inherit; text-decoration: none; }
         .related-card h4 a:hover { color: var(--gold); }
         .related-card p { font-size: 0.82rem; color: var(--muted); margin: 0; }
+
+        /* === Megosztás szakasz === */
+        .share-buttons { background: linear-gradient(135deg, rgba(212,176,107,0.08) 0%, rgba(212,176,107,0.03) 100%); border: 1px solid rgba(212,176,107,0.15); border-radius: 14px; padding: 2rem; margin: 3rem auto; max-width: 780px; }
+        .share-buttons .text-uppercase { color: var(--gold) !important; letter-spacing: 0.08em; font-size: 0.75rem !important; }
+        .share-buttons .btn-outline-light { border-color: rgba(212,176,107,0.4) !important; color: var(--gold) !important; background: transparent; transition: all 0.3s ease; }
+        .share-buttons .btn-outline-light:hover { background: rgba(212,176,107,0.2) !important; border-color: var(--gold) !important; color: var(--gold) !important; transform: translateY(-2px); }
+        .share-buttons i { font-size: 1.1rem; }
+
+        /* === Hozzászólások szakasz === */
+        .comments-section { max-width: 780px; margin: 0 auto; padding: 3rem 0; border-top: 1px solid rgba(212,176,107,0.2); }
+        .comments-section h3 { color: var(--text) !important; font-family: 'Lora', serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; }
+        .comments-section .text-gold { color: var(--gold) !important; }
+        .comment-list { margin-bottom: 3rem; }
+        .comment-item { background: rgba(212,176,107,0.05) !important; border: 1px solid rgba(212,176,107,0.15) !important; border-radius: 12px; padding: 1.5rem !important; margin-bottom: 1.5rem; }
+        .comment-item strong { color: var(--gold) !important; display: block; margin-bottom: 0.5rem; font-size: 1rem; }
+        .comment-item small { color: rgba(212,176,107,0.7) !important; font-size: 0.8rem; }
+        .comment-item p { color: rgba(245,239,232,0.9) !important; margin: 0.75rem 0 0 0; line-height: 1.6; font-size: 0.95rem; }
+        .comment-empty { text-align: center; padding: 2rem; color: var(--muted); font-style: italic; }
+
+        /* === Hozzászólás form === */
+        .comment-form-container { background: rgba(212,176,107,0.08) !important; border: 1px solid rgba(212,176,107,0.2) !important; border-radius: 16px; padding: 2.5rem !important; margin-top: 2rem; }
+        .comment-form-container h4 { color: var(--gold) !important; font-family: 'Lora', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .comment-form-container .form-label { color: rgba(212,176,107,0.8) !important; font-size: 0.85rem; font-weight: 600; }
+        .comment-form-container .form-control { background: rgba(20,20,22,0.8) !important; border: 1px solid rgba(212,176,107,0.25) !important; color: var(--text) !important; }
+        .comment-form-container .form-control:focus { background: rgba(30,30,33,0.9) !important; border-color: var(--gold) !important; color: var(--text) !important; box-shadow: 0 0 0 3px rgba(212,176,107,0.1) !important; }
+        .comment-form-container .btn-gold { background: var(--gold) !important; color: #1a1a1a !important; font-weight: 700; transition: all 0.3s ease; }
+        .comment-form-container .btn-gold:hover { background: #f4d59b !important; transform: translateY(-2px); box-shadow: 0 8px 16px rgba(212,176,107,0.25); }
+        .comment-form-container .alert-success { background: rgba(76,175,80,0.15) !important; border: 1px solid rgba(76,175,80,0.3) !important; color: #90ee90 !important; }
+        .comment-form-container .alert-danger { background: rgba(244,67,54,0.15) !important; border: 1px solid rgba(244,67,54,0.3) !important; color: #ff9999 !important; }
+
