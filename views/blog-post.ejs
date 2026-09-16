@@ -37,6 +37,66 @@
         <div class="blog-post-content">
             <%- (post.content || '').replace(/\n/g, '<br>') %>
         </div>
+
+        <!-- Megosztás -->
+        <div class="share-buttons mt-5 mb-5 d-flex align-items-center gap-3 flex-wrap">
+            <span class="text-muted small fw-bold text-uppercase tracking-wider">Megosztás:</span>
+            <div class="d-flex gap-2">
+                <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(currentUrl) %>" target="_blank" class="btn btn-sm btn-outline-light rounded-circle p-2" style="width:36px;height:36px" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(currentUrl) %>&text=<%= encodeURIComponent(post.title) %>" target="_blank" class="btn btn-sm btn-outline-light rounded-circle p-2" style="width:36px;height:36px" title="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(currentUrl) %>" target="_blank" class="btn btn-sm btn-outline-light rounded-circle p-2" style="width:36px;height:36px" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="mailto:?subject=<%= encodeURIComponent(post.title) %>&body=<%= encodeURIComponent(currentUrl) %>" class="btn btn-sm btn-outline-light rounded-circle p-2" style="width:36px;height:36px" title="E-mail"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+        </div>
+
+        <!-- Hozzászólások -->
+        <div class="comments-section mt-5 border-top border-secondary pt-5" id="comments">
+            <h3 class="mb-4"><i class="fa-solid fa-comments me-2 text-gold"></i>Hozzászólások (<%= comments.length %>)</h3>
+            
+            <div class="comment-list">
+                <% if (comments.length === 0) { %>
+                    <p class="text-muted italic">Még nincs hozzászólás. Legyen Ön az első!</p>
+                <% } else { %>
+                    <% comments.forEach(comment => { %>
+                        <div class="comment-item p-4 mb-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-gold"><%= comment.name %></strong>
+                                <small class="text-muted"><%= new Date(comment.created_at).toLocaleDateString('hu-HU') %></small>
+                            </div>
+                            <p class="mb-0 text-light opacity-75"><%= comment.content %></p>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+
+            <div class="comment-form-container mt-5 p-4 rounded-4" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(212,176,107,0.2);">
+                <h4 id="comment-form" class="mb-3 text-gold">Szóljon hozzá</h4>
+                <% if (commentMsg === 'comment_sent') { %>
+                    <div class="alert alert-success">Köszönjük! A hozzászólást elküldtük moderációra, jóváhagyás után jelenik meg.</div>
+                <% } else if (commentMsg === 'missing_fields') { %>
+                    <div class="alert alert-danger">Hiba: Minden mező kitöltése kötelező!</div>
+                <% } %>
+                <form action="/blog/<%= post.slug %>/comment" method="POST" class="mt-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small">Név</label>
+                            <input type="text" name="name" class="form-control bg-dark text-white border-secondary" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small">E-mail (nem publikus)</label>
+                            <input type="email" name="email" class="form-control bg-dark text-white border-secondary" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-muted small">Hozzászólás</label>
+                            <textarea name="content" class="form-control bg-dark text-white border-secondary" rows="4" required></textarea>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-gold btn-lg w-100 py-3 fw-bold">Küldés</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <% if (relatedPosts && relatedPosts.length > 0) { %>

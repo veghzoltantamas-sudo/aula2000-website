@@ -1146,3 +1146,31 @@ document.addEventListener('click', function (event) {
         if (option.value && subject && body) { subject.value = option.dataset.subject || ''; body.value = option.dataset.body || ''; }
     });
 })();
+
+/* Bulk select logic for Blog and Projects */
+document.addEventListener('DOMContentLoaded', () => {
+    function setupBulkSelect(selectAllId, checkboxClass, deleteBtnId) {
+        const selectAll = document.getElementById(selectAllId);
+        const checkboxes = document.querySelectorAll('.' + checkboxClass);
+        const deleteBtn = document.getElementById(deleteBtnId);
+
+        if (!selectAll || !deleteBtn) return;
+
+        selectAll.addEventListener('change', () => {
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            updateDeleteBtn();
+        });
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', updateDeleteBtn);
+        });
+
+        function updateDeleteBtn() {
+            const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+            deleteBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+        }
+    }
+
+    setupBulkSelect('blog-select-all', 'blog-checkbox', 'bulk-blog-delete-btn');
+    setupBulkSelect('project-select-all', 'project-checkbox', 'bulk-project-delete-btn');
+});

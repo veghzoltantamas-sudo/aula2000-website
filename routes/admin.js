@@ -533,6 +533,10 @@ function createAdminRouter(deps) {
             const duplicate = await dbGet("SELECT id FROM pages WHERE slug=? AND id!=?", [slug, req.params.id]);
             const finalSlug = duplicate ? `${slug}-${Date.now()}` : slug;
 
+            // Verziókezelés: mentés a page_versions táblába (Admin 2)
+            await dbRun("INSERT INTO page_versions (page_id, title, content, created_at) VALUES (?,?,?,?)",
+                [existing.id, existing.title, existing.content_json, new Date().toISOString()]);
+
             await dbRun(
                 "UPDATE pages SET title=?, slug=?, status=?, content_json=?, updated_at=? WHERE id=?",
                 [title, finalSlug, status, pageContent, new Date().toISOString(), req.params.id]
@@ -670,6 +674,24 @@ function createAdminRouter(deps) {
             await activityLog({ level: 'error', action: 'add-project', ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || '', method: 'POST', url: '/admin/add-project', status: 500, message: err.message || String(err), details: { files: Object.keys(req.files || {}), bodyKeys: Object.keys(req.body || {}) }, duration_ms: Date.now() - t0 });
             res.redirect("/admin?tab=projects&msg=Hiba");
         }
+    });
+
+    router.post("/projects/bulk-delete", requireLogin, requireNotViewer, requireCsrf, async (req, res, next) => {
+        try {
+            const ids = (Array.isArray(req.body.ids) ? req.body.ids : [req.body.ids])
+                .map(id => Number(id)).filter(id => Number.isInteger(id) && id > 0);
+            if (!ids.length) return res.redirect("/admin?tab=projects&msg=Nincs_kijelolt");
+            const placeholders = ids.map(() => '?').join(',');
+            for (const id of ids) {
+                const subimages = await dbAll("SELECT filename FROM project_images WHERE project_id=?", [id]).catch(() => []);
+                for (const img of subimages) if (img.filename) await deleteImage(img.filename).catch(() => {});
+                const p = await dbGet("SELECT cover FROM projects WHERE id=?", [id]).catch(() => null);
+                if (p && p.cover) await deleteImage(p.cover).catch(() => {});
+            }
+            await dbRun(`DELETE FROM project_images WHERE project_id IN (${placeholders})`, ids);
+            await dbRun(`DELETE FROM projects WHERE id IN (${placeholders})`, ids);
+            res.redirect("/admin?tab=projects&msg=Torolve");
+        } catch (err) { next(err); }
     });
 
     router.post("/del-project/:id", requireLogin, requireNotViewer, async (req, res, next) => {
@@ -872,6 +894,17 @@ function createAdminRouter(deps) {
     /* ============================================================
        BLOG KEZELÉS
        ============================================================ */
+    router.post("/blog/bulk-delete", requireLogin, requireNotViewer, requireCsrf, async (req, res, next) => {
+        try {
+            const ids = (Array.isArray(req.body.ids) ? req.body.ids : [req.body.ids])
+                .map(id => Number(id)).filter(id => Number.isInteger(id) && id > 0);
+            if (!ids.length) return res.redirect("/admin?tab=blog&msg=Nincs_kijelolt");
+            const placeholders = ids.map(() => '?').join(',');
+            await dbRun(`DELETE FROM blog_posts WHERE id IN (${placeholders})`, ids);
+            res.redirect("/admin?tab=blog&msg=Torolve");
+        } catch (err) { next(err); }
+    });
+
     router.post("/blog-create", requireLogin, requireNotViewer, async (req, res, next) => {
         try {
             const title = String(req.body.title || '').trim();

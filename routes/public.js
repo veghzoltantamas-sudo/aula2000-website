@@ -312,7 +312,34 @@ function createPublicRouter(deps) {
             const safePost = Object.assign({}, post, {
                 content: sanitizeHtml(post.content)
             });
-            res.render("blog-post", { content, settings, post: safePost, relatedPosts, escapeHtml });
+            const comments = await dbAll("SELECT name, content, created_at FROM comments WHERE post_id=? AND is_approved=1 ORDER BY id DESC", [post.id]).catch(() => []);
+            res.render("blog-post", { 
+                content, 
+                settings, 
+                post: safePost, 
+                relatedPosts, 
+                comments,
+                commentMsg: req.query.msg,
+                currentUrl: req.protocol + '://' + req.get('host') + req.originalUrl,
+                escapeHtml 
+            });
+        } catch (err) { next(err); }
+    });
+
+    router.post("/blog/:slug/comment", async (req, res, next) => {
+        try {
+            const { name, email, content } = req.body;
+            const post = await dbGet("SELECT id FROM blog_posts WHERE slug=?", [req.params.slug]);
+            if (!post) return res.status(404).send("Poszt nem található");
+            
+            if (!name || !email || !content) {
+                return res.redirect(`/blog/${req.params.slug}?msg=missing_fields#comment-form`);
+            }
+            
+            await dbRun("INSERT INTO comments (post_id, name, email, content, is_approved, created_at) VALUES (?,?,?,?,?,?)", 
+                [post.id, name, email, content, 0, new Date().toISOString()]);
+                
+            res.redirect(`/blog/${req.params.slug}?msg=comment_sent#comment-form`);
         } catch (err) { next(err); }
     });
 

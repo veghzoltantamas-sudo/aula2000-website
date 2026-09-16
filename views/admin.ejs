@@ -1031,19 +1031,34 @@
             <% if(tab == 'projects') { %>
             <div class="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
                 <h3 class="fw-bold m-0 text-white">Referencia Munkák Kezelése</h3>
-                <button class="btn btn-wood px-4" data-bs-toggle="modal" data-bs-target="#addProjectModal"><i class="fa-solid fa-plus me-2"></i> Új Munka Hozzáadása</button>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-danger btn-sm" id="bulk-project-delete-btn" style="display:none" onclick="if(confirm('Biztosan törli a kijelölt projekteket?')) document.getElementById('bulk-project-form').submit()"><i class="fa-solid fa-trash me-2"></i> Kijelöltek törlése</button>
+                    <button class="btn btn-wood px-4" data-bs-toggle="modal" data-bs-target="#addProjectModal"><i class="fa-solid fa-plus me-2"></i> Új Munka Hozzáadása</button>
+                </div>
             </div>
 
+            <form id="bulk-project-form" action="/admin/projects/bulk-delete" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            </form>
+
             <div class="filter-toolbar" data-filter-group="projects">
-                <button type="button" class="filter-pill active" data-filter-target="all">Összes</button>
-                <button type="button" class="filter-pill" data-filter-target="featured">Kiemelt</button>
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="form-check mb-0">
+                        <input class="form-check-input" type="checkbox" id="project-select-all">
+                        <label class="form-check-label text-white-50 small" for="project-select-all">Összes kijelölése</label>
+                    </div>
+                    <button type="button" class="filter-pill active" data-filter-target="all">Összes</button>
+                    <button type="button" class="filter-pill" data-filter-target="featured">Kiemelt</button>
+                </div>
             </div>
 
             <div class="row g-4 project-grid">
                 <% projects.forEach(p => { %>
                 <div class="col-md-4 project-item <%= p.is_featured == 1 ? 'featured' : '' %>" data-featured="<%= p.is_featured == 1 ? 'featured' : 'standard' %>">
-                    <div class="card h-100">
+                    <div class="card h-100 position-relative">
+                        <div class="position-absolute top-0 start-0 m-2" style="z-index: 10;">
+                            <input type="checkbox" name="ids" value="<%= p.id %>" form="bulk-project-form" class="project-checkbox" style="width:20px;height:20px;cursor:pointer">
+                        </div>
                         <img src="<%= p.cover ? (p.cover.startsWith('http') ? p.cover : '/uploads/' + p.cover) : 'https://via.placeholder.com/400x300' %>" style="height:220px; object-fit:cover; border-radius: 10px 10px 0 0;">
                         <div class="card-body text-center">
                             <span class="text-warning fw-bold small text-uppercase"><%= p.category %></span>
@@ -1930,16 +1945,24 @@
             <% if(tab == 'blog') { %>
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="fw-bold m-0 text-white"><i class="fa-solid fa-pen-nib me-2" style="color:var(--gold)"></i> Blog bejegyzések</h3>
-                <button class="btn btn-wood" data-bs-toggle="modal" data-bs-target="#blogCreateModal"><i class="fa-solid fa-plus me-2"></i> Új bejegyzés</button>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-danger btn-sm" id="bulk-blog-delete-btn" style="display:none" onclick="if(confirm('Biztosan törli a kijelölt bejegyzéseket?')) document.getElementById('bulk-blog-form').submit()"><i class="fa-solid fa-trash me-2"></i> Kijelöltek törlése</button>
+                    <button class="btn btn-wood" data-bs-toggle="modal" data-bs-target="#blogCreateModal"><i class="fa-solid fa-plus me-2"></i> Új bejegyzés</button>
+                </div>
             </div>
+
+            <form id="bulk-blog-form" action="/admin/blog/bulk-delete" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            </form>
 
             <div class="card p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
-                        <thead><tr><th>Cím</th><th>Kategória</th><th>Státusz</th><th>Megtekintés</th><th>Dátum</th><th></th></tr></thead>
+                        <thead><tr><th><input type="checkbox" id="blog-select-all"></th><th>Cím</th><th>Kategória</th><th>Státusz</th><th>Megtekintés</th><th>Dátum</th><th></th></tr></thead>
                         <tbody>
                             <% blogPosts.forEach(p => { %>
                             <tr>
+                                <td><input type="checkbox" name="ids" value="<%= p.id %>" form="bulk-blog-form" class="blog-checkbox"></td>
                                 <td class="fw-bold"><%= p.title %></td>
                                 <td class="text-muted"><%= p.category || '-' %></td>
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
