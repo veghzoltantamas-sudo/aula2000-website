@@ -10,6 +10,12 @@ services:
     environment:
       - PORT=8080
     volumes:
+      # Forráskód bind mount — kódmódosításnál azonnal érvényes, újraépítés nélkül
+      - ./:/app
+      # Anonymous volume — védi a konténer belső node_modules mappáját
+      # (a build során fordított sqlite3-mal együtt)
+      - /app/node_modules
+      # Adat- és feltöltési kötetek megtartása
       - ./data:/app/data
       - ./public/uploads:/app/public/uploads
     networks:

@@ -1,5 +1,9 @@
 node_modules
+.env
 data/database.sqlite
 public/uploads/*.*
 .git
 *.log
+Dockerfile
+docker-compose.yml
+.dockerignore
