@@ -35,7 +35,7 @@ function formatClientBody(raw){
 
 function createClientRouter(deps){
     const router = express.Router();
-    const { dbGet, dbAll, dbRun, getSettingsMap, generateCsrfToken, validateCsrfToken } = deps;
+    const { dbGet, dbAll, dbRun, getSettingsMap, getContentMap, generateCsrfToken, validateCsrfToken } = deps;
     const CLIENT_DIR = path.join(__dirname, '..', 'data', 'client_files');
     async function isEnabled(){
         try{ const m=await getSettingsMap(); return String(m.ugyfelkapu_enabled)==='1'; }catch{ return false; }
@@ -115,6 +115,10 @@ function createClientRouter(deps){
             res.setHeader('Content-Type', (file.mime_type && file.mime_type !== 'application/octet-stream') ? file.mime_type : (path.extname(file.original_name).toLowerCase() === '.pdf' ? 'application/pdf' : (file.mime_type || 'application/octet-stream')));
             const isImage=String(file.mime_type||'').startsWith('image/');
             const isPdf=String(file.mime_type||'')==='application/pdf';
+            const isVideo=String(file.mime_type||'').startsWith('video/');
+            const isAudio=String(file.mime_type||'').startsWith('audio/');
+            const isText=String(file.mime_type||'').startsWith('text/');
+            const isOffice=String(file.mime_type||'').includes('officedocument') || String(file.mime_type||'').includes('msword') || String(file.mime_type||'').includes('ms-excel');
             // PDF és egyéb fájltípusok kiszolgálása
             // Minden fájlra levesszük a biztonsági fejléceket, hogy a viewer-ek működjenek
             res.removeHeader('Content-Security-Policy');
@@ -168,7 +172,23 @@ function createClientRouter(deps){
             const isAudio=String(file.mime_type||'').startsWith('audio/');
             const isText=String(file.mime_type||'').startsWith('text/');
             const isOffice=String(file.mime_type||'').includes('officedocument') || String(file.mime_type||'').includes('msword') || String(file.mime_type||'').includes('ms-excel');
-            res.render("client-viewer",{ user: null, file, isImage, isPdf, isVideo, isAudio, isText, isOffice, fileUrl: "/ugyfel/fajl/"+file.id });
+            const settings = await getSettingsMap().catch(() => ({}));
+            const content = await getContentMap().catch(() => ({}));
+            res.render("client-viewer",{ 
+                user: null, 
+                file, 
+                isImage, 
+                isPdf, 
+                isVideo, 
+                isAudio, 
+                isText, 
+                isOffice, 
+                fileUrl: "/ugyfel/fajl/"+file.id, 
+                settings, 
+                content,
+                t: req.t || ((key) => key),
+                lang: req.session.lang || 'hu'
+            });
         }catch(err){ next(err); }
     });
     return { router, isEnabled, requireEnabled, requireClientLogin, clientUpload, CLIENT_DIR, formatClientBody };

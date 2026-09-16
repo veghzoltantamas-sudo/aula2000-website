@@ -249,6 +249,12 @@ app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'), {
     }
 }));
 app.use(express.static(path.join(__dirname, "public"), { maxAge: '7d', etag: true }));
+// Mozilla PDF.js — lokálisan kiszolgálva (offline is működik, nincs CDN-függőség)
+app.use('/lib/pdfjs', express.static(path.join(__dirname, "node_modules", "pdfjs-dist", "build"), {
+    maxAge: '7d',
+    etag: true,
+    setHeaders: (res) => { res.setHeader('Content-Type', 'application/javascript'); }
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -368,6 +374,19 @@ async function initializeDatabase() {
     await dbRun("CREATE TABLE IF NOT EXISTS email_templates (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, subject TEXT, body TEXT, created_at TEXT, updated_at TEXT)");
     // DB mentés meta
     await dbRun("CREATE TABLE IF NOT EXISTS db_backups (id INTEGER PRIMARY KEY AUTOINCREMENT, filename TEXT, size INTEGER, created_at TEXT)");
+
+    // Kommentek tábla
+    await dbRun("CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, post_id INTEGER, name TEXT, email TEXT, content TEXT, is_approved INTEGER DEFAULT 0, created_at TEXT)");
+    // Tartalom verziókezelés tábla
+    await dbRun("CREATE TABLE IF NOT EXISTS page_versions (id INTEGER PRIMARY KEY AUTOINCREMENT, page_id INTEGER, title TEXT, content TEXT, created_at TEXT)");
+
+    // 2FA oszlopok
+    if (userColumns && !userColumns.some(c => c.name === 'two_factor_secret')) {
+        await dbRun("ALTER TABLE users ADD COLUMN two_factor_secret TEXT");
+    }
+    if (userColumns && !userColumns.some(c => c.name === 'is_2fa_enabled')) {
+        await dbRun("ALTER TABLE users ADD COLUMN is_2fa_enabled INTEGER DEFAULT 0");
+    }
 
     const projectColumns = await dbAll("PRAGMA table_info(projects)");
     const projectFields = [
@@ -1094,7 +1113,7 @@ app.post("/logout", (req, res) => {
 });
 
 // --- ÜGYFÉLKAPU (publikus, feature-toggle) ---
-const clientMod = createClientRouter({ dbGet, dbAll, dbRun, getSettingsMap, generateCsrfToken, validateCsrfToken, activityLog });
+const clientMod = createClientRouter({ dbGet, dbAll, dbRun, getSettingsMap, getContentMap, generateCsrfToken, validateCsrfToken, activityLog });
 app.use('/ugyfel', clientMod.router);
 
 // --- ADMIN FELÜLET (route-ok a routes/admin.js-ben) ---

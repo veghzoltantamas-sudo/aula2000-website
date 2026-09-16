@@ -4,31 +4,41 @@
     <%- include('partials/index-head') %>
     <title><%= file.original_name %> - Ügyfélkapu</title>
     <style>
-        body, html { height: 100%; margin: 0; background: #1a1a1a; overflow: hidden; font-family: sans-serif; color: #fff; }
-        .viewer-container { display: flex; flex-direction: column; height: 100vh; }
-        .viewer-header { background: #222; color: #fff; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; flex-shrink: 0; z-index: 10; }
-        .viewer-header h1 { font-size: 0.95rem; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45%; font-weight: normal; color: #eee; }
-        .viewer-content { flex-grow: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #1a1a1a; }
-        .viewer-content img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .viewer-content iframe { width: 100%; height: 100%; border: none; background: #fff; display: block; }
-        .btn-close { color: #888; text-decoration: none; font-size: 1.8rem; line-height: 1; transition: color 0.2s; padding: 0 5px; }
+        [hidden]{ display: none !important; }
+        body, html { height: 100%; margin: 0; background: #1a1a1a; overflow: hidden; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #fff; }
+        .viewer-container { display: flex; flex-direction: column; height: 100%; }
+        .viewer-header { background: #222; color: #fff; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; flex-shrink: 0; z-index: 20; gap: 8px; }
+        .viewer-header h1 { font-size: 0.95rem; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; color: #eee; flex: 1; min-width: 0; }
+        .viewer-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+        .btn { background: #444; color: #eee; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.8rem; border: 1px solid #555; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; line-height: 1.1; user-select: none; }
+        .btn:hover { background: #555; color: #fff; border-color: #777; }
+        .btn:disabled { opacity: .4; cursor: default; }
+        .btn-primary { background: #ca8a04; border-color: #eab308; color: #fff; }
+        .btn-primary:hover { background: #a16207; border-color: #ca8a04; }
+        .btn-close { color: #888; text-decoration: none; font-size: 1.6rem; line-height: 1; padding: 0 4px; transition: color .2s; flex-shrink: 0; }
         .btn-close:hover { color: #fff; }
-        .viewer-actions { display: flex; gap: 8px; align-items: center; }
-        .btn-action { background: #444; color: #eee; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.8rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #555; }
-        .btn-action:hover { background: #555; color: #fff; border-color: #777; }
-        .btn-primary-action { background: #ca8a04; border-color: #eab308; color: #fff; }
-        .btn-primary-action:hover { background: #a16207; border-color: #ca8a04; }
-        
-        .mobile-pdf-view { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; }
-        .mobile-pdf-view i { font-size: 4rem; color: #ca8a04; margin-bottom: 20px; }
-        .mobile-pdf-view h2 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
-        .mobile-pdf-view p { font-size: 0.9rem; color: #888; margin-bottom: 25px; max-width: 250px; }
-        .btn-large { padding: 12px 24px; font-size: 1rem; border-radius: 8px; }
-
-        @media (max-width: 768px) {
-            .desktop-only-iframe { display: none !important; }
-            .mobile-pdf-view { display: flex !important; }
-            .viewer-header h1 { max-width: 35%; }
+        .viewer-content { flex-grow: 1; position: relative; overflow: auto; background: #1a1a1a; display: flex; align-items: center; justify-content: center; padding: 12px; -webkit-overflow-scrolling: touch; }
+        .viewer-content img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .viewer-content video { max-width: 100%; max-height: 100%; }
+        .viewer-content audio { width: 100%; max-width: 700px; }
+        .text-view { width: 100%; max-width: 850px; background: #111; color: #ddd; padding: 20px; border-radius: 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9rem; white-space: pre-wrap; word-break: break-word; line-height: 1.5; box-sizing: border-box; margin: auto; }
+        .fallback { color: #fff; text-align: center; padding: 20px; max-width: 420px; margin: auto; }
+        .fallback i { font-size: 3rem; color: #555; margin-bottom: 15px; display: block; }
+        .fallback p { color: #999; margin-bottom: 20px; }
+        #pdfLoader { flex: 1; display: flex; align-items: center; justify-content: center; color: #999; gap: 10px; }
+        .spinner { width: 28px; height: 28px; border: 3px solid #555; border-top-color: #ca8a04; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .pdf-stage { flex: 1 1 auto; overflow: auto; background: #161616; display: flex; justify-content: center; align-items: flex-start; padding: 12px 6px 24px; -webkit-overflow-scrolling: touch; }
+        .pdf-page-wrap { background: #fff; box-shadow: 0 2px 14px rgba(0,0,0,.6); margin: 0 auto; }
+        .pdf-canvas { display: block; height: auto; background: #fff; }
+        .pdf-bar { background: #201c12; border-top: 1px solid #3a3322; padding: 8px 10px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+        .pdf-bar .btn { background: #3a3322; border-color: #54481f; color: #f3e9b3; }
+        .page-ind { color: #e9d88a; font-size: 0.85rem; min-width: 70px; text-align: center; font-weight: 600; }
+        .zoom-ind { color: #bbb; font-size: 0.8rem; min-width: 52px; text-align: center; }
+        @media (max-width: 640px){
+            .viewer-header h1 { max-width: 40%; }
+            .btn span.lbl { display: none; }
+            .pdf-bar { padding: 6px; gap: 5px; }
         }
     </style>
 </head>
@@ -37,38 +47,135 @@
         <header class="viewer-header">
             <h1><%= file.original_name %></h1>
             <div class="viewer-actions">
-                <a href="<%= fileUrl %>?dl=1" class="btn-action" title="Letöltés">
-                    <i class="bi bi-download"></i> <span class="d-none d-sm-inline">Letöltés</span>
+                <a href="<%= fileUrl %>?dl=1" class="btn" title="Letöltés">
+                    <i class="bi bi-download"></i><span class="lbl"> Letöltés</span>
                 </a>
                 <a href="/ugyfel/projekt" class="btn-close" title="Bezárás">&times;</a>
             </div>
         </header>
-        <main class="viewer-content">
+        <main id="viewerMain" class="viewer-content">
             <% if (isImage) { %>
                 <img src="<%= fileUrl %>" alt="<%= file.original_name %>">
             <% } else if (isPdf) { %>
-                <iframe src="<%= fileUrl %>" class="desktop-only-iframe" title="PDF megjelenítő"></iframe>
-                <div class="mobile-pdf-view">
-                    <i class="bi bi-file-earmark-pdf"></i>
-                    <h2>PDF Dokumentum</h2>
-                    <p><%= file.original_name %></p>
-                    <a href="<%= fileUrl %>?dl=1" target="_blank" rel="noopener noreferrer" class="btn-action btn-primary-action btn-large">
-                        <i class="bi bi-box-arrow-up-right"></i> Dokumentum megnyitása
-                    </a>
+                <div id="pdfLoader"><div class="spinner"></div><span>Dokumentum betöltése…</span></div>
+                <div id="pdfStage" class="pdf-stage" hidden>
+                    <div class="pdf-page-wrap"><canvas id="pdfCanvas" class="pdf-canvas"></canvas></div>
+                </div>
+                <div id="pdfError" class="fallback" hidden>
+                    <i class="bi bi-file-earmark-x"></i>
+                    <p>Nem sikerült megnyitni a dokumentumot a böngészőben.</p>
+                    <a href="<%= fileUrl %>?dl=1" class="btn btn-primary">Fájl letöltése</a>
                 </div>
             <% } else if (isVideo) { %>
-                <video controls autoplay style="max-width: 100%; max-height: 100%;">
+                <video controls autoplay playsinline>
                     <source src="<%= fileUrl %>" type="<%= file.mime_type %>">
                     A böngészője nem támogatja a videó lejátszását.
                 </video>
+            <% } else if (isAudio) { %>
+                <audio controls autoplay>
+                    <source src="<%= fileUrl %>" type="<%= file.mime_type %>">
+                    A böngészője nem támogatja a hang lejátszását.
+                </audio>
+            <% } else if (isText) { %>
+                <div id="textView" class="text-view">Betöltés…</div>
             <% } else { %>
-                <div style="color: #fff; text-align: center; padding: 20px;">
-                    <i class="bi bi-file-earmark-lock" style="font-size: 3rem; color: #444; margin-bottom: 15px; display: block;"></i>
-                    <p>Ez a fájltípus nem tekinthető meg közvetlenül.</p>
-                    <a href="<%= fileUrl %>?dl=1" class="btn-action btn-primary-action">Fájl letöltése</a>
+                <div class="fallback">
+                    <i class="bi bi-file-earmark-lock"></i>
+                    <p>Ez a fájltípus nem tekinthető meg közvetlenül az oldalon. Kérem, töltse le.</p>
+                    <a href="<%= fileUrl %>?dl=1" class="btn btn-primary">Fájl letöltése</a>
                 </div>
             <% } %>
         </main>
+        <% if (isPdf) { %>
+        <div class="pdf-bar">
+            <button type="button" class="btn" id="btnPrev" title="Előző oldal"><i class="bi bi-chevron-left"></i></button>
+            <span class="page-ind" id="pageInd">1 / 1</span>
+            <button type="button" class="btn" id="btnNext" title="Következő oldal"><i class="bi bi-chevron-right"></i></button>
+            <span class="zoom-ind" id="zoomInd">100%</span>
+            <button type="button" class="btn" id="zoomOut" title="Kicsinyítés"><i class="bi bi-dash-lg"></i></button>
+            <button type="button" class="btn" id="zoomFit" title="Szélességre illesztés"><i class="bi bi-arrows-angle-expand"></i></button>
+            <button type="button" class="btn" id="zoomIn" title="Nagyítás"><i class="bi bi-plus-lg"></i></button>
+        </div>
+        <% } %>
     </div>
+
+    <% if (isPdf) { %>
+    <script src="/lib/pdfjs/pdf.min.js"></script>
+    <script>
+        (function(){
+            var fileUrl = "<%= fileUrl %>";
+            var loader = document.getElementById('pdfLoader');
+            var stage = document.getElementById('pdfStage');
+            var errBox = document.getElementById('pdfError');
+            var canvas = document.getElementById('pdfCanvas');
+            var pageInd = document.getElementById('pageInd');
+            var zoomInd = document.getElementById('zoomInd');
+            var btnPrev = document.getElementById('btnPrev');
+            var btnNext = document.getElementById('btnNext');
+            var zoomOut = document.getElementById('zoomOut');
+            var zoomIn = document.getElementById('zoomIn');
+            var zoomFit = document.getElementById('zoomFit');
+            var pdf = null, pageNum = 1, zoom = 1, fitScale = 1;
+
+            function show(kind){
+                loader.hidden = (kind !== 'load');
+                stage.hidden = (kind !== 'pdf');
+                errBox.hidden = (kind !== 'err');
+            }
+
+            function render(){
+                if (!pdf) return;
+                pdf.getPage(pageNum).then(function(p){
+                    var base = p.getViewport({ scale: 1 });
+                    var availW = Math.max((stage.clientWidth || window.innerWidth) - 20, 120);
+                    fitScale = Math.min(availW / base.width, 3);
+                    var scale = Math.max(0.35, zoom * fitScale);
+                    var dpr = window.devicePixelRatio || 1;
+                    var viewport = p.getViewport({ scale: scale * dpr });
+                    canvas.width = Math.floor(viewport.width);
+                    canvas.height = Math.floor(viewport.height);
+                    canvas.style.width = (Math.floor(viewport.width) / dpr) + 'px';
+                    canvas.style.height = (Math.floor(viewport.height) / dpr) + 'px';
+                    return p.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+                }).then(function(){
+                    pageInd.textContent = pageNum + ' / ' + pdf.numPages;
+                    zoomInd.textContent = Math.round(zoom * 100) + '%';
+                    btnPrev.disabled = (pageNum <= 1);
+                    btnNext.disabled = (pageNum >= pdf.numPages);
+                }).catch(function(e){ console.error(e); show('err'); });
+            }
+
+            btnPrev.onclick = function(){ if (pageNum > 1){ pageNum--; render(); } };
+            btnNext.onclick = function(){ if (pageNum < pdf.numPages){ pageNum++; stage.scrollTop = 0; render(); } };
+            zoomIn.onclick  = function(){ zoom = Math.min(zoom * 1.25, 5); render(); };
+            zoomOut.onclick = function(){ zoom = Math.max(zoom / 1.25, 0.3); render(); };
+            zoomFit.onclick = function(){ zoom = 1; render(); };
+            window.addEventListener('resize', function(){ render(); });
+
+            function load(){
+                if (!window.pdfjsLib){ show('err'); return; }
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = '/lib/pdfjs/pdf.worker.min.js';
+                fetch(fileUrl, { credentials: 'same-origin' })
+                    .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); })
+                    .then(function(buf){
+                        return window.pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
+                    })
+                    .then(function(doc){ pdf = doc; show('pdf'); render(); })
+                    .catch(function(e){ console.error(e); show('err'); });
+            }
+            load();
+        })();
+    </script>
+    <% } else if (isText) { %>
+    <script>
+        (function(){
+            var box = document.getElementById('textView');
+            fetch("<%= fileUrl %>", { credentials: 'same-origin' })
+                .then(function(r){ if (!r.ok) throw new Error(r.status); return r.text(); })
+                .then(function(t){ box.textContent = t; })
+                .catch(function(){ box.textContent = 'Nem sikerült betölteni a szöveges fájlt.'; });
+        })();
+    </script>
+    <% } %>
 </body>
 </html>
