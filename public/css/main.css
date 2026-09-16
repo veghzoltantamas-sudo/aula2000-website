@@ -1220,3 +1220,72 @@ html, body {
 }
 .ba-before { left: 12px; }
 .ba-after { right: 12px; }
+
+/* ============================================
+   KÉPALÁÍRÁSOK ÉS SZÖVEGES ELEMEK OLVASHATÓSÁGA
+   ============================================ */
+
+/* Képaláírások - erős kontrasztú, olvasható szöveg */
+.text-muted.small,
+figcaption,
+.figure-caption,
+[class*="caption"],
+.img-caption {
+    color: var(--text) !important;
+    font-weight: 500;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+/* Blog bejegyzések és cikkek összes szövege */
+.blog-content p,
+.blog-post p,
+.post-content p,
+article p,
+.article-content p {
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+/* Képek körüli szöveg konténer */
+.text-center > p,
+div.text-center > p,
+.my-4 > p {
+    color: var(--text) !important;
+    font-weight: 500;
+    opacity: 0.95;
+}
+
+/* Lista elemek */
+ul, ol {
+    color: var(--text);
+}
+li {
+    color: var(--text);
+    line-height: 1.7;
+}
+
+/* Idézetek */
+blockquote,
+.blockquote {
+    color: var(--text);
+    border-left: 4px solid var(--gold);
+    padding-left: 1.5rem;
+}
+
+/* Összes képaláírás - garantált olvashatóság */
+p.small,
+p.text-muted,
+.small.text-muted {
+    color: var(--text) !important;
+    opacity: 0.92;
+    font-weight: 500;
+}
+
+/* Fókusz és aktív elemek */
+p:not(.text-muted),
+span:not(.text-muted),
+div:not(.text-muted) > p {
+    color: var(--text);
+}
